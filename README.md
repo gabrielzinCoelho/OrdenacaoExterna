@@ -1,6 +1,6 @@
 # Tratamento de Arquivos e Ordenação em Memória Secundária
 
-Projeto desenvolvido para a disciplina de Introdução aos Algoritmos, ofertada pela UFLA.
+Projeto desenvolvido para a disciplina de Estrutura de Dados, ofertada pela UFLA.
 
 ## Sobre o projeto
 
