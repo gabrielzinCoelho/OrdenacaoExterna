@@ -5,9 +5,8 @@
 class DadosEmprego{
     friend class GerenciaCsv;
     private:
-        char seriesId[20], periodo[8], status[10], unidadeMedidaValor[10], descricao[50], categoria[100];
+        char seriesId[20], periodo[8], status[10], unidadeMedidaValor[10], descricao[50], categoria[100], valor[10];
         char tituloSerie_1[100], tituloSerie_2[100], tituloSerie_3[100], tituloSerie_4[100], tituloSerie_5[100];
-        float valor;
         int magnitudeValor;
     public:
         DadosEmprego(){};
@@ -17,15 +16,13 @@ class DadosEmprego{
 
 DadosEmprego::DadosEmprego(std::string *camposRegistro){
 
-    if(camposRegistro[2].size())
-        valor = std::stof(camposRegistro[2]);
-    else
-        valor = -1;
+
 
     magnitudeValor = std::stoi(camposRegistro[5]);
 
     std::strcpy(seriesId, camposRegistro[0].c_str());
     std::strcpy(periodo, camposRegistro[1].c_str());
+    std::strcpy(valor, camposRegistro[2].c_str());
     std::strcpy(status, camposRegistro[3].c_str());
     std::strcpy(unidadeMedidaValor, camposRegistro[4].c_str());
     std::strcpy(descricao, camposRegistro[6].c_str());

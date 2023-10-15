@@ -5,7 +5,7 @@
 
 int main(){
 
-    GerenciaCsv *gerenciaCsv = new GerenciaCsv("lms-jun22qtr.csv", 1000);
+    GerenciaCsv *gerenciaCsv = new GerenciaCsv("lms-jun22qtr.csv", 1300000);
 
     std::pair<DadosEmprego*, int> d;
 

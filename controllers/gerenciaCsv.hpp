@@ -11,6 +11,7 @@ class GerenciaCsv{
         int taxaTransferencia;
         unsigned long long int indexLeitura;
         const char separador{','};
+        std::string tratamentoEscape(const std::string &);
     public:
         GerenciaCsv(int);
         GerenciaCsv(const std::string &, int);
@@ -117,19 +118,27 @@ void GerenciaCsv::exportarCsv(const std::string &nomeArq, std::pair<DadosEmprego
 
     for(int i{0}; i<dadosExportados.second; i++){
 
-        arquivoCsv << dadosExportados.first[i].seriesId << separador
-        << dadosExportados.first[i].periodo << separador
-        << (dadosExportados.first[i].valor == -1 ? "" : std::to_string(dadosExportados.first[i].valor)) << separador
-        << dadosExportados.first[i].status << separador
-        << dadosExportados.first[i].unidadeMedidaValor << separador
+        arquivoCsv << tratamentoEscape(dadosExportados.first[i].seriesId) << separador
+        << tratamentoEscape(dadosExportados.first[i].periodo) << separador
+        << tratamentoEscape(dadosExportados.first[i].valor) << separador
+        << tratamentoEscape(dadosExportados.first[i].status) << separador
+        << tratamentoEscape(dadosExportados.first[i].unidadeMedidaValor) << separador
         << dadosExportados.first[i].magnitudeValor << separador
-        << dadosExportados.first[i].descricao << separador
-        << dadosExportados.first[i].categoria << separador
-        << dadosExportados.first[i].tituloSerie_1 << separador
-        << dadosExportados.first[i].tituloSerie_2 << separador
-        << dadosExportados.first[i].tituloSerie_3 << separador
-        << dadosExportados.first[i].tituloSerie_4 << separador
-        << dadosExportados.first[i].tituloSerie_5 << "\n";
+        << tratamentoEscape(dadosExportados.first[i].descricao) << separador
+        << tratamentoEscape(dadosExportados.first[i].categoria) << separador
+        << tratamentoEscape(dadosExportados.first[i].tituloSerie_1) << separador
+        << tratamentoEscape(dadosExportados.first[i].tituloSerie_2) << separador
+        << tratamentoEscape(dadosExportados.first[i].tituloSerie_3) << separador
+        << tratamentoEscape(dadosExportados.first[i].tituloSerie_4) << separador
+        << tratamentoEscape(dadosExportados.first[i].tituloSerie_5) << "\n";
     }
     fecharCsv();
+}
+
+std::string GerenciaCsv::tratamentoEscape(const std::string &str){
+
+    for(int i{0}; i<str.size(); i++)
+        if(str[i] == separador)
+            return '"' + str + '"'; 
+    return str;
 }
