@@ -37,7 +37,11 @@ void GerenciaCsv::definirParametrosLeitura(const std::string &nomeArq){
 
     std::string cabecalhoCsv;
     std::getline(arquivoCsv, cabecalhoCsv);
-    indexLeitura =  int(arquivoCsv.tellp()) - 2;
+    indexLeitura =  int(arquivoCsv.tellp());
+
+    std::cout << indexLeitura << "\n";
+    std::cout << "tellp: " << arquivoCsv.tellp() << " tellg: " << arquivoCsv.tellg() << "\n";
+    std::cout << cabecalhoCsv << "\n\n";
     
     fecharCsv();
 }
@@ -73,35 +77,42 @@ std::pair<DadosEmprego*, int> GerenciaCsv::importarCsv(const std::string &nomeAr
     std::string camposRegistro[numCamposRegistro], linhaRegistro;
     bool escapeCaractere;
 
-    while(std::getline(arquivoCsv, linhaRegistro) && contadorRegistros < taxaTransferencia){
-        indexSubstr = indexCampoRegistro = 0;
-        escapeCaractere = false;
-        // utiliza a variavel indexSubstr para indexar cada campo do registro no csv
+    try{
+        while(!arquivoCsv.eof() && contadorRegistros < taxaTransferencia){
 
-        for(int i{0}; i < int(linhaRegistro.size()); i++){
+            if(!std::getline(arquivoCsv, linhaRegistro))
+                throw std::string("Erro na leitura do registro.");
 
-            if(linhaRegistro[i] == '"'){
-                escapeCaractere = !escapeCaractere;
+            indexSubstr = indexCampoRegistro = 0;
+            escapeCaractere = false;
+            // utiliza a variavel indexSubstr para indexar cada campo do registro no csv
+
+            for(int i{0}; i < int(linhaRegistro.size()); i++){
+
+                if(linhaRegistro[i] == '"'){
+                    escapeCaractere = !escapeCaractere;
+                }
+                else if((linhaRegistro[i] == separador && !escapeCaractere) || linhaRegistro[i] == '\n' || linhaRegistro[i] == '\r'){
+
+                    if(linhaRegistro[indexSubstr] == '"')
+                        camposRegistro[indexCampoRegistro] = linhaRegistro.substr(indexSubstr + 1, i - (indexSubstr + 2));
+                    else
+                        camposRegistro[indexCampoRegistro] = linhaRegistro.substr(indexSubstr, i - indexSubstr);
+
+                    indexCampoRegistro++;
+                    indexSubstr = i + 1;
+
+                }
             }
-            else if(linhaRegistro[i] == separador && !escapeCaractere){
-
-                if(linhaRegistro[indexSubstr] == '"')
-                    camposRegistro[indexCampoRegistro] = linhaRegistro.substr(indexSubstr + 1, i - (indexSubstr + 2));
-                else
-                    camposRegistro[indexCampoRegistro] = linhaRegistro.substr(indexSubstr, i - indexSubstr);
-
-                indexCampoRegistro++;
-                indexSubstr = i + 1;
-
-            }
+            dadosEmprego[contadorRegistros++] = DadosEmprego(camposRegistro);
         }
-        dadosEmprego[contadorRegistros++] = DadosEmprego(camposRegistro);
+
+    }catch(std::string err){
+        std::cout << err << "\n";
     }
 
     indexLeitura = arquivoCsv.tellp();
     fecharCsv();
-
-    std::cout << indexLeitura << " **\n";
 
     return std::make_pair(dadosEmprego, contadorRegistros);
 }
