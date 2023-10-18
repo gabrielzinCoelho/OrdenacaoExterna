@@ -1,11 +1,17 @@
 #include <iostream>
 #include <utility>
 #include "./controllers/gerenciaCsv.hpp"
+#include "./controllers/gerenciaDat.hpp"
 #include "./models/dadosEmprego.hpp"
 
 int main(){
 
-    GerenciaCsv *gerenciaCsv = new GerenciaCsv("lms-jun22qtr.csv", 1000);
+    const int taxaTransferencia{1000};
+
+    std::cout << "*** " << sizeof(DadosEmprego) << "\n";
+
+    GerenciaCsv *gerenciaCsv = new GerenciaCsv("lms-jun22qtr.csv", taxaTransferencia);
+    GerenciaDat *gerenciaDat = new GerenciaDat("output.dat", taxaTransferencia);
 
     std::pair<DadosEmprego*, int> d;
 
@@ -13,9 +19,15 @@ int main(){
         d = gerenciaCsv->importarCsv("lms-jun22qtr.csv");
         // d = gerenciaCsv->importarCsv("input.csv");
         if(d.second)
+            gerenciaDat->exportarDat(d);
+        delete[] d.first;
+    }while(d.second);
+
+    do{
+        d = gerenciaDat->importarDat();
+        if(d.second)
             gerenciaCsv->exportarCsv("output.csv", d);
         delete[] d.first;
-
     }while(d.second);
 
     return 0;

@@ -8,26 +8,23 @@
 class GerenciaCsv{
     private:
         std::fstream arquivoCsv;
-        int taxaTransferencia;
+        const int taxaTransferencia;
         unsigned long long int indexLeitura;
         const char separador{','};
         std::string tratamentoEscape(const std::string &);
+        bool abrirCsv(const std::string &, std::ios_base::openmode);
+        void fecharCsv();
     public:
         GerenciaCsv(int);
         GerenciaCsv(const std::string &, int);
-        bool abrirCsv(const std::string &, std::ios_base::openmode);
-        void fecharCsv();
         std::pair<DadosEmprego*, int> importarCsv(const std::string &);
         void definirParametrosLeitura(const std::string &);
         void exportarCsv(const std::string &, std::pair<DadosEmprego*, int>);
 };
 
-GerenciaCsv::GerenciaCsv(int taxaTransferencia = 1000){
-    this->taxaTransferencia = taxaTransferencia;
-}
+GerenciaCsv::GerenciaCsv(int taxaTransferencia = 1000) : taxaTransferencia(taxaTransferencia) {}
 
-GerenciaCsv::GerenciaCsv(const std::string &nomeArq, int taxaTransferencia = 1000){
-    this->taxaTransferencia = taxaTransferencia;
+GerenciaCsv::GerenciaCsv(const std::string &nomeArq, int taxaTransferencia = 1000) : taxaTransferencia(taxaTransferencia){
     definirParametrosLeitura(nomeArq);
 }
 
