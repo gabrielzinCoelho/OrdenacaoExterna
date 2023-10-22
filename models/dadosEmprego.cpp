@@ -22,3 +22,26 @@ DadosEmprego::DadosEmprego(std::string *camposRegistro){
 std::string DadosEmprego::getSeriesId(){
     return std::string(seriesId);
 }
+
+void DadosEmprego::impressaoResumida(){
+
+    std::cout << seriesId << ": " << periodo << " * " << valor << " * " << descricao << "\n";
+}
+
+void DadosEmprego::impressaoDetalhada(){
+
+    std::cout << "Series reference: " << seriesId << "\n"
+        << "Period: " << periodo << "\n"
+        << "Data value: " << valor << "\n"
+        << "Status: " << status << "\n"
+        << "Units: " << unidadeMedidaValor << "\n"
+        << "Magntude: " << magnitudeValor << "\n"
+        << "Subject: " << descricao << "\n"
+        << "Group: " << categoria << "\n"
+        << "Series title (1): " << tituloSerie_1 << "\n"
+        << "Series title (2): " << tituloSerie_2 << "\n"
+        << "Series title (3): " << tituloSerie_3 << "\n"
+        << "Series title (4): " << tituloSerie_4 << "\n"
+        << "Series title (5): " << tituloSerie_5 << "\n";
+
+}

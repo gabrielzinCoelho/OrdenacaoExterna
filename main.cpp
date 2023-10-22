@@ -10,17 +10,32 @@
 int main(){
 
 
-    MenuNavegacao menuPrincipal("MENU PRINCIPAL", 0, 4, new std::string[4]{
-        "Conversão CSV -> Binario",
-        "Conversão Binario -> CSV",
-        "Visualizar dados",
+    MenuNavegacao menuPrincipal("MENU PRINCIPAL", 0, 3, new std::string[3]{
+        "Importar/Exportar arquivos",
+        "Manipular registros",
         "Finalizar programa"
     });
 
-    MenuNavegacao menuVisualizacao("VISUALIZAR DADOS", 10, 3, new std::string[3]{
+    MenuNavegacao menuArquivos("ARQUIVOS", 10, 3, new std::string[3]{
+        "Conversão CSV -> Binario",
+        "Conversão Binario -> CSV",
+        "Menu anterior (principal)",
+    });
+
+    MenuNavegacao menuRegistros("REGISTROS", 20, 6, new std::string[6]{
+        "Visualizar registros",
+        "Inserir registro",
+        "Deletar registro",
+        "Editar registro",
+        "Inverter posicao entre registros",
+        "Menu anterior (principal)",
+    });
+
+    MenuNavegacao menuVisualizacao("VISUALIZAR REGISTROS", 30, 4, new std::string[4]{
         "Visualizar registros entre posições X e Y",
         "Visualizar todos os registros",
-        "Menu anterior (principal)",
+        "Visualizar com detalhes",
+        "Menu anterior (registros)",
     });
 
     int escolhaMenu;
@@ -35,29 +50,60 @@ int main(){
         switch (escolhaMenu)
         {
         case 1:
-            eventosUsuario->conversaoBinario();
+            menuEscolhido = &menuArquivos;
             break;
         case 2:
-            eventosUsuario->conversaoCsv();
-            break;
-        case 3:
-            menuEscolhido = &menuVisualizacao;
+            eventosUsuario->defineDat();
+            menuEscolhido = &menuRegistros;
             break;
         case 11:
-            std::cout << "Visualizando registros...\n";
-            confirmacaoUsuario();
+            eventosUsuario->conversaoBinario();
             break;
         case 12:
-            std::cout << "Visualizando registros entre X e Y...\n";
-            confirmacaoUsuario();
+            eventosUsuario->conversaoCsv();
             break;
         case 13:
             menuEscolhido = &menuPrincipal;
             break;
+        case 21:
+            menuEscolhido = &menuVisualizacao;
+            break;
+        case 22:
+            eventosUsuario->inserirRegistro();
+            break;
+        case 23:
+            std::cout << "Deletando registro...\n";
+            confirmacaoUsuario();
+            break;
+        case 24:
+            std::cout << "Editando registro...\n";
+            confirmacaoUsuario();
+            break;
+        case 25:
+            std::cout << "Inverter posicao entre registros...\n";
+            confirmacaoUsuario();
+            break;
+        case 26:
+            eventosUsuario->resetaDat();
+            menuEscolhido = &menuPrincipal;
+            break;
+        case 31:
+            eventosUsuario->impressaoSecao();
+            break;
+        case 32:
+            eventosUsuario->impressaoGeral();
+            break;
+        case 33:
+            eventosUsuario->impressaoDetalhada();
+            break;
+        case 34:
+            menuEscolhido = &menuRegistros;
         default:
             break;
         }
-    }while(escolhaMenu != 4);
+    }while(escolhaMenu != 3);
+
+    delete[] camposRegistroRotulo;
 
     return 0;
 }

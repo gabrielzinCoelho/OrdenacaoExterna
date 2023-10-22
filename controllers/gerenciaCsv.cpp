@@ -9,12 +9,13 @@ GerenciaCsv::GerenciaCsv(const std::string &nomeArq, int taxaTransferencia = 100
 
 void GerenciaCsv::definirParametrosLeitura(const std::string &nomeArq){
 
-    abrirCsv(nomeArq, std::ios::in);
+    if (!abrirCsv(nomeArq, std::ios::in))
+        throw nomeArq + " não foi inicializado corretamente.";
 
     std::string cabecalhoCsv;
     std::getline(arquivoCsv, cabecalhoCsv);
-    indexLeitura =  int(arquivoCsv.tellp());
-    
+    indexLeitura = int(arquivoCsv.tellp());
+
     fecharCsv();
 }
 

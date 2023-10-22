@@ -12,4 +12,6 @@ class DadosEmprego{
         DadosEmprego(){};
         DadosEmprego(std::string *camposRegistro);
         std::string getSeriesId();
+        void impressaoResumida();
+        void impressaoDetalhada();
 };

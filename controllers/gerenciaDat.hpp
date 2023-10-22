@@ -21,4 +21,7 @@ class GerenciaDat{
         std::pair<DadosEmprego*, int> importarDat();
         void exportarDat(std::pair<DadosEmprego*, int>);
         void definirParametrosLeitura(int);
+        unsigned int getNumRegistros();
+        void imprimirRegistros(bool imprimirTudo, long int posInical = -1, long int posFinal = -1, bool impressaoDetalhada = false);
+        void inserirRegistro(std::string *camposRegistro);
 };

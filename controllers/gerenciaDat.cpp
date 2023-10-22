@@ -60,7 +60,9 @@ void GerenciaDat::leituraCabecalho(){
 
 std::pair<DadosEmprego*, int> GerenciaDat::importarDat(){
 
-    abrirDat(std::ios::in);
+    if(!abrirDat(std::ios::in))
+        throw nomeArq + " não foi inicializado corretamente.";
+        
     arquivoDat.seekp(indexLeitura, std::ios::beg);
 
     int dadosRestantes = numRegistros - ((indexLeitura - tamanhoCabecalho)/sizeof(DadosEmprego));
@@ -90,3 +92,73 @@ void GerenciaDat::exportarDat(std::pair<DadosEmprego*, int> dadosExportados){
 
     fecharDat();
 }
+
+unsigned int GerenciaDat::getNumRegistros(){
+    return numRegistros;
+}
+
+void GerenciaDat::imprimirRegistros(bool imprimirTudo, long int posInicial, long int posFinal, bool impressaoDetalhada){
+
+    try{
+
+        if(!abrirDat(std::ios::in))
+            throw std::string(nomeArq + " não foi inicializado corretamente.");
+
+        if(!numRegistros)
+            throw std::string("Não há nada para visualizar...");
+        
+        if(imprimirTudo){
+            posInicial = 0;
+            posFinal = numRegistros - 1;
+        }
+
+        if (posInicial < 0 || posInicial >= numRegistros || posFinal < 0 || posFinal >= numRegistros)
+            throw std::string("Posicoes de registro invalidas.");
+
+        long ordemImpressao{(posInicial <= posFinal) ? 1 : -1};
+        long int contador{posInicial};
+        DadosEmprego *registro = new DadosEmprego();
+
+        std::cout << "\n\n";
+
+        while ((contador * ordemImpressao) <= (posFinal * ordemImpressao)){
+
+            arquivoDat.seekp(tamanhoCabecalho + contador * sizeof(DadosEmprego), std::ios::beg);
+            arquivoDat.read((char *)registro, sizeof(DadosEmprego));
+            
+            if(impressaoDetalhada)
+                registro->impressaoDetalhada();
+            else
+                registro->impressaoResumida();
+
+            contador += ordemImpressao;
+        }
+
+        delete registro;
+        fecharDat();
+
+    }catch(std::string err){
+        fecharDat();
+        std::cout << err << "\n";
+    }
+
+}
+
+void GerenciaDat::inserirRegistro(std::string *camposRegistro){
+
+    abrirDat(std::ios::in|std::ios::out);
+
+    DadosEmprego *registro = new DadosEmprego(camposRegistro);
+
+    arquivoDat.seekp(0, std::ios::end);
+    arquivoDat.write((char *) registro, (sizeof(DadosEmprego)));
+
+    numRegistros ++;
+    atualizarCabecalho();
+
+    std::cout << "Registro criado com sucesso.\n";
+
+    fecharDat();
+}
+
+
