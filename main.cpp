@@ -2,20 +2,17 @@
 #include <utility>
 #include "./controllers/gerenciaCsv.cpp"
 #include "./controllers/gerenciaDat.cpp"
-#include "./models/dadosEmprego.hpp"
-#include "./views/menuNavegacao.hpp"
+#include "./controllers/eventosUsuario.cpp"
+#include "./models/dadosEmprego.cpp"
+#include "./views/menuNavegacao.cpp"
 #include "globals.cpp"
 
 int main(){
 
-    GerenciaCsv *gerenciaCsv = new GerenciaCsv("lms-jun22qtr.csv", taxaTransferencia);
-    GerenciaDat *gerenciaDat = new GerenciaDat("output.dat", taxaTransferencia);
 
-    MenuNavegacao menuPrincipal("MENU PRINCIPAL", 0, 6, new std::string[6]{
-        "Importar CSV",
-        "ExportarCSV",
-        "Importar Binario",
-        "Exportar Binario",
+    MenuNavegacao menuPrincipal("MENU PRINCIPAL", 0, 4, new std::string[4]{
+        "Conversão CSV -> Binario",
+        "Conversão Binario -> CSV",
         "Visualizar dados",
         "Finalizar programa"
     });
@@ -29,6 +26,8 @@ int main(){
     int escolhaMenu;
     MenuNavegacao *menuEscolhido{&menuPrincipal};
 
+    EventosUsuario *eventosUsuario = new EventosUsuario();
+
     do{
         system ("clear || cls");
         escolhaMenu = menuEscolhido->mostraMenu();
@@ -36,22 +35,12 @@ int main(){
         switch (escolhaMenu)
         {
         case 1:
-            std::cout << "Importando CSV...\n";
-            confirmacaoUsuario();
+            eventosUsuario->conversaoBinario();
             break;
         case 2:
-            std::cout << "Exportando CSV...\n";
-            confirmacaoUsuario();
+            eventosUsuario->conversaoCsv();
             break;
         case 3:
-            std::cout << "Importando Binario...\n";
-            confirmacaoUsuario();
-            break;
-        case 4:
-            std::cout << "Exportando Binario...\n";
-            confirmacaoUsuario();
-            break;
-        case 5:
             menuEscolhido = &menuVisualizacao;
             break;
         case 11:
@@ -68,27 +57,7 @@ int main(){
         default:
             break;
         }
-    }while(escolhaMenu != 6);
-    
-
-    // std::pair<DadosEmprego*, int> d;
-
-    // do{
-    //     d = gerenciaCsv->importarCsv("lms-jun22qtr.csv");
-
-    //     if(d.second)
-    //         gerenciaDat->exportarDat(d);
-    //     delete[] d.first;
-    // }while(d.second);
-
-    // do{
-    //     d = gerenciaDat->importarDat();
-    //     if(d.second)
-    //         gerenciaCsv->exportarCsv("output.csv", d);
-    //     delete[] d.first;
-    // }while(d.second);
-
-
+    }while(escolhaMenu != 4);
 
     return 0;
 }
