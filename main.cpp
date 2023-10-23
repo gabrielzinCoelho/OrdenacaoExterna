@@ -72,16 +72,13 @@ int main(){
             eventosUsuario->inserirRegistro();
             break;
         case 23:
-            std::cout << "Deletando registro...\n";
-            confirmacaoUsuario();
+            eventosUsuario->deletarRegistro();
             break;
         case 24:
-            std::cout << "Editando registro...\n";
-            confirmacaoUsuario();
+            eventosUsuario->editarRegistro();
             break;
         case 25:
-            std::cout << "Inverter posicao entre registros...\n";
-            confirmacaoUsuario();
+            eventosUsuario->trocarRegistros();
             break;
         case 26:
             eventosUsuario->resetaDat();

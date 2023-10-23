@@ -21,4 +21,7 @@ class EventosUsuario{
         void impressaoGeral();
         void impressaoDetalhada();
         void inserirRegistro();
+        void trocarRegistros();
+        void editarRegistro();
+        void deletarRegistro();
 };

@@ -1,20 +1,17 @@
 #pragma once
 #include "eventosUsuario.hpp"
 
-EventosUsuario::EventosUsuario()
-{
+EventosUsuario::EventosUsuario(){
     gerenciaCsv = new GerenciaCsv(taxaTransferencia);
     gerenciaDat = nullptr;
 }
 
-EventosUsuario::~EventosUsuario()
-{
+EventosUsuario::~EventosUsuario(){
     delete gerenciaCsv;
     delete gerenciaDat;
 }
 
-void EventosUsuario::defineDat()
-{
+void EventosUsuario::defineDat(){
 
     std::string nomeDat;
     std::cout << "Nome do arquivo dat: ";
@@ -22,24 +19,20 @@ void EventosUsuario::defineDat()
     gerenciaDat = new GerenciaDat(nomeDat, taxaTransferencia);
 }
 
-void EventosUsuario::resetaDat()
-{
+void EventosUsuario::resetaDat(){
     if (gerenciaDat)
         delete gerenciaDat;
     gerenciaDat = nullptr;
 }
 
-void EventosUsuario::verificaDat()
-{
+void EventosUsuario::verificaDat(){
     if (!gerenciaCsv)
         throw "Nenhum arquivo dat definido.";
 }
 
-void EventosUsuario::conversaoBinario()
-{
+void EventosUsuario::conversaoBinario(){
 
-    try
-    {
+    try{
         std::string nomeCsv, nomeDat;
 
         std::cout << "Nome do arquivo csv de entrada: ";
@@ -72,11 +65,9 @@ void EventosUsuario::conversaoBinario()
     confirmacaoUsuario();
 }
 
-void EventosUsuario::conversaoCsv()
-{
+void EventosUsuario::conversaoCsv(){
 
-    try
-    {
+    try{
         std::string nomeCsv, nomeDat;
 
         std::cout << "Nome do arquivo dat de entrada: ";
@@ -126,11 +117,11 @@ void EventosUsuario::impressaoSecao(){
 
         gerenciaDat->imprimirRegistros(false, x, y);
         std::cout << "\n";
-        confirmacaoUsuario();
 
     }catch(std::string err){
         std::cout << "Erro na impressao dos registros.\n";
     }
+    confirmacaoUsuario();
 }
 
 void EventosUsuario::impressaoGeral(){
@@ -154,32 +145,120 @@ void EventosUsuario::impressaoDetalhada(){
 
         gerenciaDat->imprimirRegistros(false, x, x, true);
         std::cout << "\n";
-        confirmacaoUsuario();
 
     }catch(std::string err){
         std::cout << "Erro na impressao do registro.\n";
     }
-
+    confirmacaoUsuario();
 }
 
 void EventosUsuario::inserirRegistro(){
 
-    std::string *camposRegistro = new std::string[numCamposRegistro];
+    try{
 
-    std::cout << "Preencha os campos do novo registro: \n\n";
+        std::cout << "Informe a posicao em que o registro será inserido: \n";
 
-    std::cin.ignore(1, '\n');
+        long int x;
 
-    for(int i{0}; i<numCamposRegistro; i++){
-        std::cout << camposRegistroRotulo[i];
-        std::getline(std::cin, camposRegistro[i]);
+        std::cout << "X: ";
+        std::cin >> x;
+
+        std::string *camposRegistro = new std::string[numCamposRegistro];
+
+        std::cout << "Preencha os campos do novo registro: \n\n";
+
+        std::cin.ignore(1, '\n');
+
+        for(int i{0}; i<numCamposRegistro; i++){
+            std::cout << camposRegistroRotulo[i];
+            std::getline(std::cin, camposRegistro[i]);
+        }
+
+        std::cout << "\nAdicionando registro...\n";
+
+
+        gerenciaDat->inserirRegistro(x, camposRegistro);
+        delete[] camposRegistro;
+
+    }catch(std::string err){
+        std::cout << err << "\n";
     }
-
-    std::cout << "\n\n";
-
-    gerenciaDat->inserirRegistro(camposRegistro);
     confirmacaoUsuario();
+}
 
-    delete[] camposRegistro;
+void EventosUsuario::trocarRegistros(){
+
+    try{
+
+        std::cout << "Trocando de posição os registros X e Y: \n";
+
+        long int x, y;
+
+        std::cout << "X: ";
+        std::cin >> x;
+
+        std::cout << "Y: ";
+        std::cin >> y;
+
+        gerenciaDat->trocarRegistros(x, y);
+        std::cout << "\nTroca realizada com sucesso.\n";
+
+    }catch(std::string err){
+        std::cout << "Erro na troca dos registros.\n";
+    }
+    confirmacaoUsuario();
+}
+
+void EventosUsuario::editarRegistro(){
+
+    try{
+
+        std::cout << "Informe a posicao do registro: \n";
+
+        long int x;
+
+        std::cout << "X: ";
+        std::cin >> x;
+
+        std::cout << "\nAtualize os campos do novo registro: \n\n";
+
+        std::string *camposRegistro = new std::string[numCamposRegistro];
+        std::cin.ignore(1, '\n');
+        for(int i{0}; i<numCamposRegistro; i++){
+            std::cout << camposRegistroRotulo[i];
+            std::getline(std::cin, camposRegistro[i]);
+        }
+        std::cout << "\n\n";
+
+        gerenciaDat->editarRegistro(x, camposRegistro);
+
+        std::cout << "\nEdicao realizada com sucesso.\n";
+        delete[] camposRegistro;
+    }catch(std::string err){
+        std::cout << "Erro na edicao do registro.\n";
+    }
+    confirmacaoUsuario();
+}
+
+void EventosUsuario::deletarRegistro(){
+
+
+    try{
+
+        std::cout << "Informe a posicao do registro: \n";
+
+        long int x;
+
+        std::cout << "X: ";
+        std::cin >> x;
+
+        gerenciaDat->deletarRegistro(x);
+
+        std::cout << "\nDelecao realizada com sucesso.\n";
+
+    }catch(std::string err){
+        std::cout << "Erro na edicao do registro.\n";
+    }
+    confirmacaoUsuario();
 
 }

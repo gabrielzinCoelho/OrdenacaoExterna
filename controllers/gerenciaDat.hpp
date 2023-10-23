@@ -23,5 +23,8 @@ class GerenciaDat{
         void definirParametrosLeitura(int);
         unsigned int getNumRegistros();
         void imprimirRegistros(bool imprimirTudo, long int posInical = -1, long int posFinal = -1, bool impressaoDetalhada = false);
-        void inserirRegistro(std::string *camposRegistro);
+        void inserirRegistro(long int pos, std::string *camposRegistro);
+        void trocarRegistros(long int posA, long int posB);
+        void editarRegistro(long int pos, std::string *camposRegistro);
+        void deletarRegistro(long int pos);
 };
