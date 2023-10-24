@@ -7,6 +7,11 @@
 #include "./views/menuNavegacao.cpp"
 #include "globals.cpp"
 
+// Gabriel Coelho Costa
+// Isac Gonçalves Cunha
+// Mateus Milani Rodrigues
+//10A
+
 int main(){
 
 
