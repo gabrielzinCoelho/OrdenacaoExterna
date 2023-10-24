@@ -11,6 +11,6 @@ A base de informações utilizada se refere a dados estatísticos relacionados �
 ## Detalhes do projeto
 
 * Basta compilar o arquivo main.cpp
-* Todos os arquivos manipulados pelo programa deve ficar na pasta ``` "./baseDados/" ```
+* Todos os arquivos manipulados pelo programa devem ficar na pasta ``` "./baseDados/" ```
 * O programa consegue gerenciar vários registros csv e binário em uma mesma execução
 * Qualquer tipo de importação/exportação de arquivos concatena os dados no arquivo de destino, nunca os sobreescreve
