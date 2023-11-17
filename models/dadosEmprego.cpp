@@ -45,3 +45,43 @@ void DadosEmprego::impressaoDetalhada(){
         << "Series title (5): " << tituloSerie_5 << "\n";
 
 }
+
+bool DadosEmprego::operator<(const DadosEmprego &d){
+
+    int comparacaoSeriesId = std::strcmp(this->seriesId, d.seriesId);
+
+    if(comparacaoSeriesId < 0)
+        return true;
+    
+    if(comparacaoSeriesId > 0)
+        return false;
+    
+    if(std::strcmp(this->periodo, d.periodo) <= 0)
+        return true;
+    
+    return false;
+    
+}
+
+bool DadosEmprego::operator>(const DadosEmprego &d){
+
+    int comparacaoSeriesId = std::strcmp(this->seriesId, d.seriesId);
+
+    if(comparacaoSeriesId > 0)
+        return true;
+    
+    if(comparacaoSeriesId < 0)
+        return false;
+    
+    if(std::strcmp(this->periodo, d.periodo) >= 0)
+        return true;
+    
+    return false;
+
+}
+
+bool DadosEmprego::operator==(const DadosEmprego &d){
+
+    return !(std::strcmp(this->seriesId, d.seriesId)) && !(std::strcmp(this->periodo, d.periodo));
+
+}

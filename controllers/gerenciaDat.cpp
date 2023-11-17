@@ -198,8 +198,7 @@ void GerenciaDat::inserirRegistro(long int pos, std::string *camposRegistro)
     fecharDat();
 }
 
-void GerenciaDat::trocarRegistros(long int posA, long int posB)
-{
+void GerenciaDat::trocarRegistros(long int posA, long int posB){
 
     try
     {
@@ -251,8 +250,7 @@ void GerenciaDat::editarRegistro(long int pos, std::string *camposRegistro)
     fecharDat();
 }
 
-void GerenciaDat::deletarRegistro(long int pos)
-{
+void GerenciaDat::deletarRegistro(long int pos){
 
     if (pos < 0 || pos >= numRegistros)
         throw std::string("Posicao de registro invalida.");
@@ -278,4 +276,8 @@ void GerenciaDat::deletarRegistro(long int pos)
 
     delete registro;
     fecharDat();
+}
+
+void ordenarArquivo(){
+    
 }

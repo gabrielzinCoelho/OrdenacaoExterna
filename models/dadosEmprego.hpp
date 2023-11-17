@@ -14,4 +14,7 @@ class DadosEmprego{
         std::string getSeriesId();
         void impressaoResumida();
         void impressaoDetalhada();
+        bool operator<(const DadosEmprego &d);
+        bool operator>(const DadosEmprego &d);
+        bool operator==(const DadosEmprego &d);
 };

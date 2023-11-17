@@ -93,6 +93,8 @@ void EventosUsuario::conversaoCsv(){
         delete gerenciaDat;
 
         std::cout << nomeCsv << " exportado com sucesso.\n";
+
+        //ordenar arquivo exportado
     }
     catch (std::string err){
         std::cout << "Falha na importacao: " << err << "\n";
