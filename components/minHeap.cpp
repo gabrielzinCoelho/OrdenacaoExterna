@@ -1,5 +1,7 @@
 #pragma once
+#include <stdexcept>
 #include "./minHeap.hpp"
+#include "./dadosHeap.cpp"
 
 MinHeap::MinHeap(DadosEmprego *arr, int tamanho) : capacidade(tamanho), tamanho(tamanho), heap(new DadosHeap[tamanho]) {
     
@@ -61,7 +63,7 @@ void MinHeap::corrigeSubindo(int i){
 
 DadosHeap MinHeap::removeRaiz(){
 
-    if(!tamanho) throw "Heap vazia.\n";
+    if(!tamanho) throw std::runtime_error("Heap vazia.\n");
 
     DadosHeap &temp = heap[0];
 
@@ -72,17 +74,33 @@ DadosHeap MinHeap::removeRaiz(){
     return temp;
 }
 
+DadosHeap MinHeap::removeInserindo(const DadosHeap &d){
+
+    if(!tamanho) throw std::runtime_error("Heap vazia.\n");
+
+    DadosHeap temp = heap[0];
+    heap[0] = d;
+
+    corrigeDescendo(0);
+    return temp;
+}
+
+
 DadosHeap MinHeap::espiaRaiz(){
-    if(!tamanho) throw "Heap Vazia.\n";
+    if(!tamanho) throw std::runtime_error("Heap vazia.\n");
     return heap[0];
 }
 
-void MinHeap::insere(DadosEmprego &d){
+// void MinHeap::insere(const DadosEmprego &d){
 
-    if(tamanho == capacidade) throw "Heap cheia.\n";
+//     if(tamanho == capacidade) throw std::runtime_error("Heap cheia.\n");
 
-    heap[tamanho] = DadosHeap(&d, 0);
-    corrigeSubindo(tamanho);
+//     heap[tamanho] = DadosHeap((DadosEmprego *) &d, 0);
+//     corrigeSubindo(tamanho);
 
-    tamanho++;
+//     tamanho++;
+// }
+
+bool MinHeap::vazia(){
+    return !tamanho;
 }

@@ -1,7 +1,7 @@
 #pragma once
 #include "./dadosHeap.hpp"
 
-DadosHeap::DadosHeap() : pesoValor(0), valorDado(nullptr) {}
+DadosHeap::DadosHeap() : pesoValor(0){}
 
 DadosHeap::DadosHeap(DadosEmprego *d, int p) : pesoValor(p), valorDado(*d) {}
 

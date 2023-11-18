@@ -1,5 +1,6 @@
 #pragma once
 #include "eventosUsuario.hpp"
+#include "./ordenacaoExterna.cpp"
 
 EventosUsuario::EventosUsuario(){
     gerenciaCsv = new GerenciaCsv(taxaTransferencia);
@@ -261,6 +262,22 @@ void EventosUsuario::deletarRegistro(){
     }catch(std::string err){
         std::cout << "Erro na edicao do registro.\n";
     }
+    confirmacaoUsuario();
+
+}
+
+void EventosUsuario::ordenarArquivo(){
+
+    std::string nomeDat;
+
+    std::cout << "Nome do arquivo binario: ";
+    std::cin >> nomeDat;
+
+    OrdenacaoExterna *instanciaOrdenacao = new OrdenacaoExterna(nomeDat, 0.01); //10MB
+    delete instanciaOrdenacao;
+
+    std::cout << "\nOrdenacao realizada com sucesso.\n";
+
     confirmacaoUsuario();
 
 }

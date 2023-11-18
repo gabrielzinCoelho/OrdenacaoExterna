@@ -15,9 +15,10 @@
 int main(){
 
 
-    MenuNavegacao menuPrincipal("MENU PRINCIPAL", 0, 3, new std::string[3]{
+    MenuNavegacao menuPrincipal("MENU PRINCIPAL", 0, 4, new std::string[4]{
         "Importar/Exportar arquivos",
         "Manipular registros",
+        "Ordenacao Externa dos Registros",
         "Finalizar programa"
     });
 
@@ -42,6 +43,7 @@ int main(){
         "Visualizar com detalhes",
         "Menu anterior (registros)",
     });
+    
 
     int escolhaMenu;
     MenuNavegacao *menuEscolhido{&menuPrincipal};
@@ -60,6 +62,9 @@ int main(){
         case 2:
             eventosUsuario->defineDat();
             menuEscolhido = &menuRegistros;
+            break;
+        case 3:
+            eventosUsuario->ordenarArquivo();
             break;
         case 11:
             eventosUsuario->conversaoBinario();
@@ -85,7 +90,7 @@ int main(){
         case 25:
             eventosUsuario->trocarRegistros();
             break;
-        case 26:
+         case 26:
             eventosUsuario->resetaDat();
             menuEscolhido = &menuPrincipal;
             break;
@@ -103,7 +108,7 @@ int main(){
         default:
             break;
         }
-    }while(escolhaMenu != 3);
+    }while(escolhaMenu != 4);
 
     delete[] camposRegistroRotulo;
 

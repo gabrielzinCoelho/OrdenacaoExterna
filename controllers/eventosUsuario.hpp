@@ -3,6 +3,7 @@
 #include <fstream>
 #include "./gerenciaCsv.hpp"
 #include "./gerenciaDat.hpp"
+#include "./ordenacaoExterna.hpp"
 #include "../globals.cpp"
 
 class EventosUsuario{
@@ -24,4 +25,5 @@ class EventosUsuario{
         void trocarRegistros();
         void editarRegistro();
         void deletarRegistro();
+        void ordenarArquivo();
 };
