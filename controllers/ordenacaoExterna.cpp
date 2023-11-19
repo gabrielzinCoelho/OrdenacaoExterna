@@ -2,33 +2,24 @@
 #include <stdexcept>
 #include "./ordenacaoExterna.hpp"
 #include "../components/minHeap.cpp"
+#include "../components/arquivoBinario.cpp"
 
 OrdenacaoExterna::OrdenacaoExterna(const std::string &nomeArq, float gB){
 
     const unsigned int gBParaByte = 1000000000; // 1 x 10^9
     unsigned int tamanhoMaxHeap = gB * gBParaByte/sizeof(DadosHeap), tamanhoHeap;
 
-    abrirDat(nomeArq, &arquivoPrincipal);
+    arquivoPrincipal = new ArquivoBinario(nomeArq, std::ios::in);
+    arquivoTemp_01 = new ArquivoBinario("temp01.dat");
+    arquivoTemp_02 = new ArquivoBinario("temp02.dat");
+    arquivoTemp_03 = new ArquivoBinario("temp03.dat");
+    arquivoTemp_04 = new ArquivoBinario("temp04.dat");
 
-    abrirDat("temp01.dat", &arquivoTemp_01, std::ios::out);
-    arquivoTemp_01.close();
-    abrirDat("temp01.dat", &arquivoTemp_01, std::ios::in | std::ios::out);
 
-    abrirDat("temp02.dat", &arquivoTemp_02, std::ios::out);
-    arquivoTemp_02.close();
-    abrirDat("temp02.dat", &arquivoTemp_02, std::ios::in | std::ios::out);
-
-    // abrirDat("temp03.dat", &arquivoTemp_03, std::ios::in | std::ios::out);
-    // abrirDat("temp04.dat", &arquivoTemp_04, std::ios::in | std::ios::out);
-
-    leituraCabecalho();
-    atualizarCabecalho(&arquivoTemp_01, 0);
-    atualizarCabecalho(&arquivoTemp_02, 0);
-
-    tamanhoHeap = numRegistros <= tamanhoMaxHeap ? numRegistros : tamanhoMaxHeap;
+    tamanhoHeap = arquivoPrincipal->getNumRegistros() <= tamanhoMaxHeap ? arquivoPrincipal->getNumRegistros() : tamanhoMaxHeap;
 
     DadosEmprego *d = new DadosEmprego[tamanhoHeap];
-    arquivoPrincipal.read((char *)d, sizeof(DadosEmprego) * tamanhoHeap);
+    arquivoPrincipal->arquivo.read((char *)d, sizeof(DadosEmprego) * tamanhoHeap);
 
     heapRegistros = new MinHeap(d, tamanhoHeap);
     delete[] d;
@@ -39,59 +30,30 @@ OrdenacaoExterna::OrdenacaoExterna(const std::string &nomeArq, float gB){
 
 OrdenacaoExterna::~OrdenacaoExterna(){
     
-    arquivoPrincipal.close();
-    arquivoTemp_01.close();
-    arquivoTemp_02.close();
-    arquivoTemp_03.close();
-    arquivoTemp_04.close();
-    // remover arquivos temporarios do disco
+    delete arquivoPrincipal;
+    delete arquivoTemp_01;
+    delete arquivoTemp_02;
+    delete arquivoTemp_03;
+    delete arquivoTemp_04;
+
+    // deletar temporarios
+
 }
-
-bool OrdenacaoExterna::abrirDat(const std::string &nomeArq, std::fstream *arqPtr, std::ios_base::openmode modoAbertura){
-    try
-    {
-        
-        arqPtr->open(caminhoPastaArquivos + nomeArq, modoAbertura);
-
-        if (!arqPtr->good())
-            throw "Erro na abertura: " + nomeArq + "\n";
-
-        return true;
-    }
-    catch (std::string err)
-    {
-        std::cout << err;
-        arqPtr->clear();
-        return false;
-    }
-}
-
-void OrdenacaoExterna::leituraCabecalho()
-{
-    arquivoPrincipal.seekp(0);
-    arquivoPrincipal.read((char *)&numRegistros, sizeof(int));
-}
-
-void OrdenacaoExterna::atualizarCabecalho(std::fstream *arqPtr, unsigned int numRegistros){
-
-    arqPtr->seekp(0);
-    arqPtr->write((char *)&numRegistros, sizeof(unsigned int));
-}
-
 
 void OrdenacaoExterna::distribuicaoRegistros(){
 
-    int pesoSegmento{0};
-    std::fstream *arquivoTempAtual{&arquivoTemp_01}, *arquivoTempSeguinte{&arquivoTemp_02};
-
     try{
+
+        int pesoSegmento{0};
+        ArquivoBinario *arquivoTempAtual{arquivoTemp_01}, *arquivoTempSeguinte{arquivoTemp_02};
 
         DadosHeap dadoHeap, dadoHeapRaiz;
         DadosEmprego dadoEmprego;
+        unsigned int contadorRegistros{0};
 
         while(!heapRegistros->vazia()){
 
-            if(arquivoPrincipal.read((char *)&dadoEmprego, sizeof(DadosEmprego))){
+            if(arquivoPrincipal->arquivo.read((char *)&dadoEmprego, sizeof(DadosEmprego))){
                 // ainda tem registros no arquivo principal (remove raiz inserindo novo valor lido)
 
                 dadoHeapRaiz = heapRegistros->espiaRaiz();
@@ -99,6 +61,8 @@ void OrdenacaoExterna::distribuicaoRegistros(){
                 if(dadoHeapRaiz.pesoValor > pesoSegmento){
                     pesoSegmento = dadoHeapRaiz.pesoValor;
                     std::swap(arquivoTempAtual, arquivoTempSeguinte);
+                    arquivoTempAtual->setNumRegistros(arquivoTempAtual->getNumRegistros() + contadorRegistros);
+                    contadorRegistros = 0;
                 }
 
                 if(dadoEmprego < dadoHeapRaiz.valorDado){
@@ -111,15 +75,25 @@ void OrdenacaoExterna::distribuicaoRegistros(){
             }
             else
                 dadoHeap = heapRegistros->removeRaiz();
-
-            arquivoTempAtual->write((char *)&dadoHeap.valorDado, sizeof(DadosEmprego));
-
+            
+            arquivoTempAtual->arquivo.write((char *)&dadoHeap.valorDado, sizeof(DadosEmprego));
+            contadorRegistros++;
         }
 
-        
+        std::cout << "arquivo 1: " << arquivoTemp_01->getNumRegistros() << "\n";
+        std::cout << "arquivo 2: " << arquivoTemp_02->getNumRegistros() << "\n";
 
     }catch(std::runtime_error &e){
         std::cout << e.what() << "\n";
     }
+
+}
+
+void OrdenacaoExterna::intercalacaoRegistros(){
+
+    // std::pair<std::fstream*, std::fstream*> fontesEntrada = std::make_pair(&arquivoTemp_01, &arquivoTemp_02);
+    // std::pair<std::fstream*, std::fstream*> fontesSaida = std::make_pair(&arquivoTemp_03, &arquivoTemp_04);
+
+    // while()
 
 }

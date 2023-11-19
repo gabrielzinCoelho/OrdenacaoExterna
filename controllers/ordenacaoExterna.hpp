@@ -2,17 +2,16 @@
 #include <iostream>
 #include <fstream>
 #include "../components/minHeap.hpp"
+#include "../components/arquivoBinario.hpp"
 #include "../globals.cpp"
 
 class OrdenacaoExterna{
     private:
-        unsigned int gigasRamDisponivel, numRegistros;
+        unsigned int gigasRamDisponivel;
         MinHeap *heapRegistros;
-        std::fstream arquivoPrincipal, arquivoTemp_01, arquivoTemp_02, arquivoTemp_03, arquivoTemp_04;
-        bool abrirDat(const std::string &nomeArq, std::fstream *arqPtr, std::ios_base::openmode modoAbertura = std::ios::in);
-        void leituraCabecalho();
-        void atualizarCabecalho(std::fstream *arqPtr, unsigned int numRegistros);
+        ArquivoBinario *arquivoPrincipal, *arquivoTemp_01, *arquivoTemp_02, *arquivoTemp_03, *arquivoTemp_04;
         void distribuicaoRegistros();
+        void intercalacaoRegistros();
     public:
         OrdenacaoExterna(const std::string &nomeArq, float gB = 4);
         ~OrdenacaoExterna();
