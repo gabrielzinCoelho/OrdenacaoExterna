@@ -1,6 +1,8 @@
 #pragma once
 #include "dadosEmprego.hpp"
 
+DadosEmprego::DadosEmprego(){}
+
 DadosEmprego::DadosEmprego(std::string *camposRegistro){
 
     magnitudeValor = std::stoi(camposRegistro[5]);
@@ -84,4 +86,14 @@ bool DadosEmprego::operator==(const DadosEmprego &d){
 
     return !(std::strcmp(this->seriesId, d.seriesId)) && !(std::strcmp(this->periodo, d.periodo));
 
+}
+
+void DadosEmprego::apagar(){
+    seriesId[0] = '-';
+    seriesId[1] = '1';
+    seriesId[2] = '\0';
+}
+
+bool DadosEmprego::ehNulo(){
+    return seriesId[0] == '-' && seriesId[1] == '1' && seriesId[2] == '\0';
 }

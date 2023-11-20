@@ -19,4 +19,5 @@ class ArquivoBinario{
         void atualizarCabecalho();
         void setNumRegistros(unsigned int numRegistros);
         unsigned int getNumRegistros();
+        void posicionaInicio();
 };

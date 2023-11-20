@@ -72,3 +72,10 @@ void ArquivoBinario::setNumRegistros(unsigned int numRegistros){
 unsigned int ArquivoBinario::getNumRegistros(){
     return numRegistros;
 }
+
+void ArquivoBinario::posicionaInicio(){
+
+    indexLeitura = tamanhoCabecalho;
+    arquivo.seekp(indexLeitura);
+
+}

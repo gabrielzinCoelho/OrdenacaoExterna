@@ -11,7 +11,7 @@ class OrdenacaoExterna{
         MinHeap *heapRegistros;
         ArquivoBinario *arquivoPrincipal, *arquivoTemp_01, *arquivoTemp_02, *arquivoTemp_03, *arquivoTemp_04;
         void distribuicaoRegistros();
-        void intercalacaoRegistros();
+        void intercalacaoRegistros(ArquivoBinario *fonteEntrada_01, ArquivoBinario *fonteEntrada_02, ArquivoBinario *fonteSaida_01, ArquivoBinario *fonteSaida_02);
     public:
         OrdenacaoExterna(const std::string &nomeArq, float gB = 4);
         ~OrdenacaoExterna();

@@ -9,7 +9,7 @@ class DadosEmprego{
         char tituloSerie_1[100], tituloSerie_2[100], tituloSerie_3[100], tituloSerie_4[100], tituloSerie_5[100];
         int magnitudeValor;
     public:
-        DadosEmprego(){};
+        DadosEmprego();
         DadosEmprego(std::string *camposRegistro);
         std::string getSeriesId();
         void impressaoResumida();
@@ -17,4 +17,6 @@ class DadosEmprego{
         bool operator<(const DadosEmprego &d);
         bool operator>(const DadosEmprego &d);
         bool operator==(const DadosEmprego &d);
+        void apagar();
+        bool ehNulo();
 };
