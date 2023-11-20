@@ -26,6 +26,7 @@ OrdenacaoExterna::OrdenacaoExterna(const std::string &nomeArq, float gB){
 
     distribuicaoRegistros();
 
+    std::cout << "main:" << arquivoPrincipal->getNumRegistros() << "\n";
     std::cout << "temp01: " << arquivoTemp_01->getNumRegistros() << "\n";
     std::cout << "temp02: " << arquivoTemp_02->getNumRegistros() << "\n";
     std::cout << "temp03: " << arquivoTemp_03->getNumRegistros() << "\n";
@@ -170,16 +171,10 @@ void OrdenacaoExterna::intercalacaoRegistros(ArquivoBinario *fonteEntrada_01, Ar
 
         if(d1->ehNulo()) // nao entrou no loop anterior e nn leu o primeiro elemento do bloco
             fonteEntrada_01->arquivo.read((char *) d1, sizeof(DadosEmprego));
-        else{
-            fonteEntrada_01->arquivo.seekp(-1 * (sizeof(DadosEmprego)), std::ios::end);
+        else if(d1_anterior->ehNulo()){
+            fonteEntrada_01->arquivo.seekp(-1 * (sizeof(DadosEmprego)), std::ios::end); // recuperar o registro anterior
             fonteEntrada_01->arquivo.read((char *) d1_anterior, sizeof(DadosEmprego));
-        }   
-
-        fonteSaida_01->arquivo.write((char *) d1, sizeof(DadosEmprego));
-        contadorRegistros_01++;
-        contadorRegistrosIntercalados++;
-        *d1_anterior = *d1;
-        fonteEntrada_01->arquivo.read((char *) d1, sizeof(DadosEmprego));
+        }
 
         if(*d1 < *d1_anterior){
             //novo bloco em arquivo 01
@@ -187,28 +182,35 @@ void OrdenacaoExterna::intercalacaoRegistros(ArquivoBinario *fonteEntrada_01, Ar
             std::swap(fonteSaida_01, fonteSaida_02);
             contadorRegistrosIntercalados = 0;
         }
+
+        fonteSaida_01->arquivo.write((char *) d1, sizeof(DadosEmprego));
+        contadorRegistros_01++;
+        contadorRegistrosIntercalados++;
+        *d1_anterior = *d1;
+        fonteEntrada_01->arquivo.read((char *) d1, sizeof(DadosEmprego));
+
     }
 
     while(contadorRegistros_02 < fonteEntrada_02->getNumRegistros()){
 
         if(d2->ehNulo()) // nao entrou no loop anterior e nn leu o primeiro elemento do bloco
             fonteEntrada_02->arquivo.read((char *) d2, sizeof(DadosEmprego));
-        else{
-            fonteEntrada_02->arquivo.seekp(-1 * (sizeof(DadosEmprego)), std::ios::end);
+        else if(d2_anterior->ehNulo()){
+            fonteEntrada_02->arquivo.seekp(-1 * (sizeof(DadosEmprego)), std::ios::end); // recuperar o registro anterior
             fonteEntrada_02->arquivo.read((char *) d2_anterior, sizeof(DadosEmprego));
-        }   
+        }
+
+        if(*d2 < *d2_anterior){
+            //novo bloco em arquivo 02
+            fonteSaida_02->setNumRegistros(fonteSaida_02->getNumRegistros() + contadorRegistrosIntercalados);
+            std::swap(fonteSaida_01, fonteSaida_02);
+            contadorRegistrosIntercalados = 0;
+        }
 
         fonteSaida_01->arquivo.write((char *) d2, sizeof(DadosEmprego));
         contadorRegistros_02++;
         *d2_anterior = *d2;
         fonteEntrada_02->arquivo.read((char *) d2, sizeof(DadosEmprego));
-
-        if(*d2 < *d2_anterior){
-            //novo bloco em arquivo 02
-            fonteSaida_01->setNumRegistros(fonteSaida_01->getNumRegistros() + contadorRegistrosIntercalados);
-            std::swap(fonteSaida_01, fonteSaida_02);
-            contadorRegistrosIntercalados = 0;
-        }
     }
 
     fonteEntrada_01->setNumRegistros(0);
