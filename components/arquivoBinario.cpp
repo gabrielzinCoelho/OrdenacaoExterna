@@ -79,3 +79,19 @@ void ArquivoBinario::posicionaInicio(){
     arquivo.seekp(indexLeitura);
 
 }
+
+void ArquivoBinario::lerRegistro(DadosEmprego *d){
+	arquivo.read((char *) d, sizeof(DadosEmprego));
+	indexLeitura = arquivo.tellp();
+}
+
+void ArquivoBinario::desfazerLeitura(){
+    indexLeitura-= sizeof(DadosEmprego);
+    arquivo.seekp(indexLeitura);
+}
+
+bool ArquivoBinario::fimLeitura(){
+	
+	return (indexLeitura - tamanhoCabecalho)/sizeof(DadosEmprego) >= numRegistros;
+	
+}

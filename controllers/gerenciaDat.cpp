@@ -75,18 +75,20 @@ std::pair<DadosEmprego *, int> GerenciaDat::importarDat()
     if (!abrirDat(std::ios::in))
         throw nomeArq + " não foi inicializado corretamente.";
 
-    arquivoDat.seekp(indexLeitura, std::ios::beg);
-
     int dadosRestantes = numRegistros - ((indexLeitura - tamanhoCabecalho) / sizeof(DadosEmprego));
     int tamanhoLeitura = dadosRestantes > taxaTransferencia ? taxaTransferencia : dadosRestantes;
 
     if (!tamanhoLeitura)
         return std::make_pair(nullptr, 0);
+    
+    arquivoDat.seekp(indexLeitura, std::ios::beg);
 
     DadosEmprego *dadosEmprego = new DadosEmprego[tamanhoLeitura];
     arquivoDat.read((char *)dadosEmprego, sizeof(DadosEmprego) * tamanhoLeitura);
 
-    indexLeitura = arquivoDat.tellp();
+    // indexLeitura = arquivoDat.tellp();
+    indexLeitura += sizeof(DadosEmprego) * tamanhoLeitura;
+
     fecharDat();
 
     return std::make_pair(dadosEmprego, tamanhoLeitura);
@@ -276,8 +278,4 @@ void GerenciaDat::deletarRegistro(long int pos){
 
     delete registro;
     fecharDat();
-}
-
-void ordenarArquivo(){
-    
 }

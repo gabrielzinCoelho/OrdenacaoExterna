@@ -32,7 +32,17 @@ OrdenacaoExterna::OrdenacaoExterna(const std::string &nomeArq, float gB){
     std::cout << "temp03: " << arquivoTemp_03->getNumRegistros() << "\n";
     std::cout << "temp04: " << arquivoTemp_04->getNumRegistros() << "\n";
 
-    intercalacaoRegistros(arquivoTemp_01, arquivoTemp_02, arquivoTemp_03, arquivoTemp_04);
+    // intercalacaoRegistros(arquivoTemp_01, arquivoTemp_02, arquivoTemp_03, arquivoTemp_04);
+    
+
+    // if(arquivoTemp_01->getNumRegistros() && arquivoTemp_02->getNumRegistros())
+    //     mergeSort(arquivoTemp_01, arquivoTemp_02, arquivoTemp_03, arquivoTemp_04);
+    // else{
+    //     std::cout << "temp01: " << arquivoTemp_01->getNumRegistros() << "\n";
+    //     std::cout << "temp02: " << arquivoTemp_02->getNumRegistros() << "\n";
+    //     std::cout << "temp03: " << arquivoTemp_03->getNumRegistros() << "\n";
+    //     std::cout << "temp04: " << arquivoTemp_04->getNumRegistros() << "\n";
+    // }
 }
 
 OrdenacaoExterna::~OrdenacaoExterna(){
@@ -230,4 +240,120 @@ void OrdenacaoExterna::intercalacaoRegistros(ArquivoBinario *fonteEntrada_01, Ar
         std::cout << "temp04: " << arquivoTemp_04->getNumRegistros() << "\n";
     }
 
+}
+
+void OrdenacaoExterna::intercalacao(ArquivoBinario *fonteEntrada_01, ArquivoBinario *fonteEntrada_02, ArquivoBinario *fonteSaida){
+	
+    DadosEmprego *d1{new DadosEmprego}, *d1_anterior{new DadosEmprego}, *d2{new DadosEmprego}, *d2_anterior{new DadosEmprego};
+    unsigned int contadorRegistros;
+	bool fimBloco_01{false}, fimBloco_02{false};
+
+    // primeira leitura de cada bloco
+	if(!fonteEntrada_01->fimLeitura())
+		fonteEntrada_01->lerRegistro(d1);
+	if(!fonteEntrada_02->fimLeitura())
+		fonteEntrada_02->lerRegistro(d2);
+
+    //setar ponteiros anteriores para nulo (deletados)
+    d1_anterior->apagar();
+    d2_anterior->apagar();
+	
+	while(!(fimBloco_01 || fonteEntrada_01->fimLeitura() || fimBloco_02 || fonteEntrada_02->fimLeitura())){
+		
+		if(*d1 < *d2){
+			fonteSaida->arquivo.write((char *) d1, sizeof(DadosEmprego));
+            contadorRegistros++;
+            *d1_anterior = *d1;
+            fonteEntrada_01->lerRegistro(d1);
+		}
+        else{
+			
+			fonteSaida->arquivo.write((char *) d2, sizeof(DadosEmprego));
+            contadorRegistros++;
+            *d2_anterior = *d2;
+            fonteEntrada_02->lerRegistro(d2);
+		}
+		
+		
+		if(!d1_anterior->ehNulo() && *d1 < *d1_anterior){
+			//novo bloco em arquivo 01
+			fonteEntrada_01->desfazerLeitura();
+			fimBloco_01 = true;
+         }
+         
+         if(!d2_anterior->ehNulo() && *d2 < *d2_anterior){
+			//novo bloco em arquivo 02
+			fonteEntrada_02->desfazerLeitura();
+			fimBloco_02 = true;
+         }
+		
+	}
+	
+	while(!(fimBloco_01 || fonteEntrada_01->fimLeitura())){
+	
+		fonteSaida->arquivo.write((char *) d1, sizeof(DadosEmprego));
+        contadorRegistros++;
+        *d1_anterior = *d1;
+        fonteEntrada_01->lerRegistro(d1);
+        
+        if(!d1_anterior->ehNulo() && *d1 < *d1_anterior){
+			//novo bloco em arquivo 01
+			fonteEntrada_01->desfazerLeitura();
+			fimBloco_01 = true;
+         }
+	
+	}
+	
+	while(!(fimBloco_02 || fonteEntrada_02->fimLeitura())){
+	
+		fonteSaida->arquivo.write((char *) d2, sizeof(DadosEmprego));
+        contadorRegistros++;
+        *d2_anterior = *d2;
+        fonteEntrada_02->lerRegistro(d2);
+        
+        if(!d2_anterior->ehNulo() && *d2 < *d2_anterior){
+			//novo bloco em arquivo 02
+			fonteEntrada_02->desfazerLeitura();
+			fimBloco_02 = true;
+         }
+	
+	}
+
+    fonteSaida->setNumRegistros(fonteSaida->getNumRegistros() + contadorRegistros);
+
+	delete d1;
+    delete d1_anterior;
+    delete d2;
+    delete d2_anterior;
+
+}
+
+void OrdenacaoExterna::mergeSort(ArquivoBinario *fonteEntrada_01, ArquivoBinario *fonteEntrada_02, ArquivoBinario *fonteSaida_01, ArquivoBinario *fonteSaida_02){
+
+    fonteEntrada_01->posicionaInicio(); 
+    fonteEntrada_02->posicionaInicio();
+    fonteSaida_01->posicionaInicio();
+    fonteSaida_02->posicionaInicio();
+
+    while(!fonteEntrada_01->fimLeitura() && !fonteEntrada_02->fimLeitura()){
+
+        intercalacao(fonteEntrada_01, fonteEntrada_02, fonteSaida_01);
+        std::swap(fonteSaida_01, fonteSaida_02);
+
+    }
+
+    fonteEntrada_01->setNumRegistros(0);
+    fonteEntrada_02->setNumRegistros(0);
+    // fonteEntrada_01->posicionaInicio(); 
+    // fonteEntrada_02->posicionaInicio();
+
+   if(fonteSaida_01->getNumRegistros() && fonteSaida_02->getNumRegistros())
+        mergeSort(fonteSaida_01, fonteSaida_02, fonteEntrada_01, fonteEntrada_02);
+    else{
+        std::cout << "temp01: " << arquivoTemp_01->getNumRegistros() << "\n";
+        std::cout << "temp02: " << arquivoTemp_02->getNumRegistros() << "\n";
+        std::cout << "temp03: " << arquivoTemp_03->getNumRegistros() << "\n";
+        std::cout << "temp04: " << arquivoTemp_04->getNumRegistros() << "\n";
+    }
+    
 }
