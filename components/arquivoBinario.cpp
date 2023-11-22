@@ -86,6 +86,12 @@ void ArquivoBinario::lerRegistro(DadosEmprego *d, int numRegistros){
 	indexLeitura += sizeof(DadosEmprego) * numRegistros;
 }
 
+void ArquivoBinario::escreverRegistro(DadosEmprego *d){
+
+	arquivo.write((char *) d, sizeof(DadosEmprego));
+	indexLeitura += sizeof(DadosEmprego);
+}
+
 void ArquivoBinario::desfazerLeitura(){
     indexLeitura-= sizeof(DadosEmprego);
     arquivo.seekp(indexLeitura);

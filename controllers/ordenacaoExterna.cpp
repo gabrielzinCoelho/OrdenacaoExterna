@@ -97,7 +97,8 @@ void OrdenacaoExterna::distribuicaoRegistros(){
             else
                 dadoHeap = heapRegistros->removeRaiz();
             
-            arquivoTempAtual->arquivo.write((char *)&dadoHeap.valorDado, sizeof(DadosEmprego));
+            arquivoTempAtual->escreverRegistro(&dadoHeap.valorDado);
+            // arquivoTempAtual->arquivo.write((char *)&dadoHeap.valorDado, sizeof(DadosEmprego));
             contadorRegistros++;
         }
 
@@ -250,7 +251,7 @@ void OrdenacaoExterna::intercalacaoRegistros(ArquivoBinario *fonteEntrada_01, Ar
 void OrdenacaoExterna::intercalacao(ArquivoBinario *fonteEntrada_01, ArquivoBinario *fonteEntrada_02, ArquivoBinario *fonteSaida){
 	
     DadosEmprego *d1{new DadosEmprego}, *d1_anterior{new DadosEmprego}, *d2{new DadosEmprego}, *d2_anterior{new DadosEmprego};
-    unsigned int contadorRegistros;
+    unsigned int contadorRegistros{0};
 	bool fimBloco_01{false}, fimBloco_02{false};
 
     // primeira leitura de cada bloco
@@ -266,14 +267,14 @@ void OrdenacaoExterna::intercalacao(ArquivoBinario *fonteEntrada_01, ArquivoBina
 	while(!(fimBloco_01 || fonteEntrada_01->fimLeitura() || fimBloco_02 || fonteEntrada_02->fimLeitura())){
 		
 		if(*d1 < *d2){
-			fonteSaida->arquivo.write((char *) d1, sizeof(DadosEmprego));
+			fonteSaida->escreverRegistro(d1);
             contadorRegistros++;
             *d1_anterior = *d1;
             fonteEntrada_01->lerRegistro(d1);
 		}
         else{
 			
-			fonteSaida->arquivo.write((char *) d2, sizeof(DadosEmprego));
+			fonteSaida->escreverRegistro(d2);
             contadorRegistros++;
             *d2_anterior = *d2;
             fonteEntrada_02->lerRegistro(d2);
@@ -296,7 +297,7 @@ void OrdenacaoExterna::intercalacao(ArquivoBinario *fonteEntrada_01, ArquivoBina
 	
 	while(!(fimBloco_01 || fonteEntrada_01->fimLeitura())){
 	
-		fonteSaida->arquivo.write((char *) d1, sizeof(DadosEmprego));
+		fonteSaida->escreverRegistro(d1);
         contadorRegistros++;
         *d1_anterior = *d1;
         fonteEntrada_01->lerRegistro(d1);
@@ -311,7 +312,7 @@ void OrdenacaoExterna::intercalacao(ArquivoBinario *fonteEntrada_01, ArquivoBina
 	
 	while(!(fimBloco_02 || fonteEntrada_02->fimLeitura())){
 	
-		fonteSaida->arquivo.write((char *) d2, sizeof(DadosEmprego));
+		fonteSaida->escreverRegistro(d2);
         contadorRegistros++;
         *d2_anterior = *d2;
         fonteEntrada_02->lerRegistro(d2);
