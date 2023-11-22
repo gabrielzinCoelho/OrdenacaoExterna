@@ -273,7 +273,7 @@ void EventosUsuario::ordenarArquivo(){
     std::cout << "Nome do arquivo binario: ";
     std::cin >> nomeDat;
 
-    OrdenacaoExterna *instanciaOrdenacao = new OrdenacaoExterna(nomeDat, 0.05); //10MB
+    OrdenacaoExterna *instanciaOrdenacao = new OrdenacaoExterna(nomeDat, 0.05); //50MB
     delete instanciaOrdenacao;
 
     std::cout << "\nOrdenacao realizada com sucesso.\n";

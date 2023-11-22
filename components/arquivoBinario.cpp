@@ -1,5 +1,6 @@
 #pragma once
 #include <stdexcept>
+#include <cmath>
 #include "./arquivoBinario.hpp"
 #include "../controllers/ordenacaoExterna.hpp"
 
@@ -16,7 +17,7 @@ ArquivoBinario::ArquivoBinario(std::string nomeArq) : tamanhoCabecalho(sizeof(un
 
         numRegistros = 0;
         atualizarCabecalho();
-        indexLeitura = tamanhoCabecalho;
+        posicionaInicio();
 
     }catch(std::runtime_error &e){
         std::cout << e.what() << "\n";
@@ -34,8 +35,8 @@ ArquivoBinario::ArquivoBinario(std::string nomeArq, std::ios_base::openmode modo
         if (!arquivo.good())
             throw "Erro na abertura: " + nomeArq + "\n";
 
-        indexLeitura = tamanhoCabecalho;
         leituraCabecalho();
+        posicionaInicio();
 
     }catch(std::runtime_error &e){
         std::cout << e.what() << "\n";
@@ -51,7 +52,7 @@ ArquivoBinario::~ArquivoBinario(){
 void ArquivoBinario::leituraCabecalho(){
 
     arquivo.seekp(0);
-    arquivo.read((char *)&numRegistros, sizeof(int));
+    arquivo.read((char *)&numRegistros, sizeof(unsigned int));
 
     //redefinirPonteiroArquivo();
 }
@@ -64,7 +65,6 @@ void ArquivoBinario::atualizarCabecalho(){
 
 void ArquivoBinario::setNumRegistros(unsigned int numRegistros){
     this->numRegistros = numRegistros;
-    indexLeitura = arquivo.tellp();
     atualizarCabecalho();
     arquivo.seekp(indexLeitura);
 }
@@ -80,9 +80,10 @@ void ArquivoBinario::posicionaInicio(){
 
 }
 
-void ArquivoBinario::lerRegistro(DadosEmprego *d){
-	arquivo.read((char *) d, sizeof(DadosEmprego));
-	indexLeitura = arquivo.tellp();
+void ArquivoBinario::lerRegistro(DadosEmprego *d, int numRegistros){
+
+	arquivo.read((char *) d, sizeof(DadosEmprego) * numRegistros);
+	indexLeitura += sizeof(DadosEmprego) * numRegistros;
 }
 
 void ArquivoBinario::desfazerLeitura(){
@@ -92,6 +93,7 @@ void ArquivoBinario::desfazerLeitura(){
 
 bool ArquivoBinario::fimLeitura(){
 	
-	return (indexLeitura - tamanhoCabecalho)/sizeof(DadosEmprego) >= numRegistros;
+    unsigned int registrosLidos = std::ceil((indexLeitura - tamanhoCabecalho) / float(sizeof(DadosEmprego)));
+	return registrosLidos >= numRegistros;
 	
 }

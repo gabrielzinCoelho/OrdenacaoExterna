@@ -22,6 +22,6 @@ class MinHeap{
         DadosHeap espiaRaiz();
         DadosHeap removeRaiz();
         DadosHeap removeInserindo(const DadosHeap &d);
-        // void insere(const DadosEmprego &d);
+        void insere(const DadosHeap &d);
         bool vazia();
 };

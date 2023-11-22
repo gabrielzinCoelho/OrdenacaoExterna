@@ -19,8 +19,8 @@ OrdenacaoExterna::OrdenacaoExterna(const std::string &nomeArq, float gB){
     tamanhoHeap = arquivoPrincipal->getNumRegistros() <= tamanhoMaxHeap ? arquivoPrincipal->getNumRegistros() : tamanhoMaxHeap;
 
     DadosEmprego *d = new DadosEmprego[tamanhoHeap];
-    arquivoPrincipal->arquivo.read((char *)d, sizeof(DadosEmprego) * tamanhoHeap);
-
+    arquivoPrincipal->posicionaInicio();
+    arquivoPrincipal->lerRegistro(d, tamanhoHeap);
     heapRegistros = new MinHeap(d, tamanhoHeap);
     delete[] d;
 
@@ -32,17 +32,19 @@ OrdenacaoExterna::OrdenacaoExterna(const std::string &nomeArq, float gB){
     std::cout << "temp03: " << arquivoTemp_03->getNumRegistros() << "\n";
     std::cout << "temp04: " << arquivoTemp_04->getNumRegistros() << "\n";
 
-    // intercalacaoRegistros(arquivoTemp_01, arquivoTemp_02, arquivoTemp_03, arquivoTemp_04);
-    
+    long long int diferenca = arquivoPrincipal->getNumRegistros() - arquivoTemp_01->getNumRegistros() - arquivoTemp_02->getNumRegistros();
 
-    // if(arquivoTemp_01->getNumRegistros() && arquivoTemp_02->getNumRegistros())
-    //     mergeSort(arquivoTemp_01, arquivoTemp_02, arquivoTemp_03, arquivoTemp_04);
-    // else{
-    //     std::cout << "temp01: " << arquivoTemp_01->getNumRegistros() << "\n";
-    //     std::cout << "temp02: " << arquivoTemp_02->getNumRegistros() << "\n";
-    //     std::cout << "temp03: " << arquivoTemp_03->getNumRegistros() << "\n";
-    //     std::cout << "temp04: " << arquivoTemp_04->getNumRegistros() << "\n";
-    // }
+    std::cout << "diferenca:  " << diferenca << "\n";
+
+    if(arquivoTemp_01->getNumRegistros() && arquivoTemp_02->getNumRegistros())
+        mergeSort(arquivoTemp_01, arquivoTemp_02, arquivoTemp_03, arquivoTemp_04);
+    else{
+        std::cout << "temp01: " << arquivoTemp_01->getNumRegistros() << "\n";
+        std::cout << "temp02: " << arquivoTemp_02->getNumRegistros() << "\n";
+        std::cout << "temp03: " << arquivoTemp_03->getNumRegistros() << "\n";
+        std::cout << "temp04: " << arquivoTemp_04->getNumRegistros() << "\n";
+        std::cout << "nem intercalou\n";
+    }
 }
 
 OrdenacaoExterna::~OrdenacaoExterna(){
@@ -70,22 +72,24 @@ void OrdenacaoExterna::distribuicaoRegistros(){
 
         while(!heapRegistros->vazia()){
 
-            if(arquivoPrincipal->arquivo.read((char *)&dadoEmprego, sizeof(DadosEmprego))){
+            dadoHeapRaiz = heapRegistros->espiaRaiz();
+
+            if(dadoHeapRaiz.pesoValor > pesoSegmento){
+                pesoSegmento = dadoHeapRaiz.pesoValor;
+                arquivoTempAtual->setNumRegistros(arquivoTempAtual->getNumRegistros() + contadorRegistros);
+                std::swap(arquivoTempAtual, arquivoTempSeguinte);
+                contadorRegistros = 0;
+            }
+
+            // if(arquivoPrincipal->arquivo.read((char *)&dadoEmprego, sizeof(DadosEmprego))){
+            if(!arquivoPrincipal->fimLeitura()){
                 // ainda tem registros no arquivo principal (remove raiz inserindo novo valor lido)
 
-                dadoHeapRaiz = heapRegistros->espiaRaiz();
+                arquivoPrincipal->lerRegistro(&dadoEmprego);
 
-                if(dadoHeapRaiz.pesoValor > pesoSegmento){
-                    pesoSegmento = dadoHeapRaiz.pesoValor;
-                    std::swap(arquivoTempAtual, arquivoTempSeguinte);
-                    arquivoTempAtual->setNumRegistros(arquivoTempAtual->getNumRegistros() + contadorRegistros);
-                    contadorRegistros = 0;
-                }
-
-                if(dadoEmprego < dadoHeapRaiz.valorDado){
+                if(dadoEmprego < dadoHeapRaiz.valorDado)
                     dadoHeap = heapRegistros->removeInserindo(DadosHeap(&dadoEmprego, pesoSegmento + 1));
 
-                }
                 else
                     dadoHeap = heapRegistros->removeInserindo(DadosHeap(&dadoEmprego, pesoSegmento));
 
@@ -97,6 +101,7 @@ void OrdenacaoExterna::distribuicaoRegistros(){
             contadorRegistros++;
         }
 
+        arquivoTempAtual->setNumRegistros(arquivoTempAtual->getNumRegistros() + contadorRegistros);
 
     }catch(std::runtime_error &e){
         std::cout << e.what() << "\n";
@@ -339,7 +344,6 @@ void OrdenacaoExterna::mergeSort(ArquivoBinario *fonteEntrada_01, ArquivoBinario
 
         intercalacao(fonteEntrada_01, fonteEntrada_02, fonteSaida_01);
         std::swap(fonteSaida_01, fonteSaida_02);
-
     }
 
     fonteEntrada_01->setNumRegistros(0);

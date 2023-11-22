@@ -20,7 +20,7 @@ class ArquivoBinario{
         void setNumRegistros(unsigned int numRegistros);
         unsigned int getNumRegistros();
         void posicionaInicio();
-        void lerRegistro(DadosEmprego *d);
+        void lerRegistro(DadosEmprego *d, int numRegistros = 1);
         void desfazerLeitura();
         bool fimLeitura();
 };

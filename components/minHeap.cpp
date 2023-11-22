@@ -52,6 +52,9 @@ void MinHeap::corrigeDescendo(int i){
 
 void MinHeap::corrigeSubindo(int i){
 
+    if(i == 0)
+        return;
+
     int indexPai{pai(i)};
 
     if(heap[i] < heap[indexPai]){
@@ -91,15 +94,15 @@ DadosHeap MinHeap::espiaRaiz(){
     return heap[0];
 }
 
-// void MinHeap::insere(const DadosEmprego &d){
+void MinHeap::insere(const DadosHeap &d){
 
-//     if(tamanho == capacidade) throw std::runtime_error("Heap cheia.\n");
+    if(tamanho == capacidade) throw std::runtime_error("Heap cheia.\n");
 
-//     heap[tamanho] = DadosHeap((DadosEmprego *) &d, 0);
-//     corrigeSubindo(tamanho);
+    heap[tamanho] = d;
+    corrigeSubindo(tamanho);
 
-//     tamanho++;
-// }
+    tamanho++;
+}
 
 bool MinHeap::vazia(){
     return !tamanho;
