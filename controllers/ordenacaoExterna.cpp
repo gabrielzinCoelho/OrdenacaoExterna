@@ -325,6 +325,16 @@ void OrdenacaoExterna::intercalacao(ArquivoBinario *fonteEntrada_01, ArquivoBina
 	
 	}
 
+    if(!fimBloco_01 && fonteEntrada_01->fimLeitura()){
+        fonteSaida->escreverRegistro(d1);
+        contadorRegistros++;
+    }
+
+    if(!fimBloco_02 && fonteEntrada_02->fimLeitura()){
+        fonteSaida->escreverRegistro(d2);
+        contadorRegistros++;
+    }
+
     fonteSaida->setNumRegistros(fonteSaida->getNumRegistros() + contadorRegistros);
 
 	delete d1;
@@ -341,7 +351,7 @@ void OrdenacaoExterna::mergeSort(ArquivoBinario *fonteEntrada_01, ArquivoBinario
     fonteSaida_01->posicionaInicio();
     fonteSaida_02->posicionaInicio();
 
-    while(!fonteEntrada_01->fimLeitura() && !fonteEntrada_02->fimLeitura()){
+    while(!fonteEntrada_01->fimLeitura() || !fonteEntrada_02->fimLeitura()){
 
         intercalacao(fonteEntrada_01, fonteEntrada_02, fonteSaida_01);
         std::swap(fonteSaida_01, fonteSaida_02);
