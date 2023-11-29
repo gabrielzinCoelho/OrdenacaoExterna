@@ -66,9 +66,9 @@ void MinHeap::corrigeSubindo(int i){
 
 DadosHeap MinHeap::removeRaiz(){
 
-    if(!tamanho) throw std::runtime_error("Heap vazia.\n");
+    if(vazia()) throw std::runtime_error("Heap vazia.\n");
 
-    DadosHeap &temp = heap[0];
+    DadosHeap temp = heap[0];
 
     std::swap(heap[0], heap[tamanho - 1]);
     tamanho--;
@@ -105,5 +105,5 @@ void MinHeap::insere(const DadosHeap &d){
 }
 
 bool MinHeap::vazia(){
-    return !tamanho;
+    return tamanho <= 0;
 }

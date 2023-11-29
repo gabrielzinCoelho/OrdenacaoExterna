@@ -7,7 +7,6 @@
 
 class OrdenacaoExterna{
     private:
-        unsigned int gigasRamDisponivel;
         MinHeap *heapRegistros;
         ArquivoBinario *arquivoPrincipal, *arquivoTemp_01, *arquivoTemp_02, *arquivoTemp_03, *arquivoTemp_04;
         void distribuicaoRegistros();

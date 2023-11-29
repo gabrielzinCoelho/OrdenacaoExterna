@@ -25,6 +25,10 @@ std::string DadosEmprego::getSeriesId(){
     return std::string(seriesId);
 }
 
+std::string DadosEmprego::getPeriodo(){
+    return std::string(periodo);
+}
+
 void DadosEmprego::impressaoResumida(){
 
     std::cout << seriesId << ": " << periodo << " * " << valor << " * " << descricao << "\n";

@@ -80,6 +80,12 @@ void ArquivoBinario::posicionaInicio(){
 
 }
 
+void ArquivoBinario::posicionaIndex(){
+
+    arquivo.seekp(indexLeitura);
+
+}
+
 void ArquivoBinario::lerRegistro(DadosEmprego *d, int numRegistros){
 
 	arquivo.read((char *) d, sizeof(DadosEmprego) * numRegistros);
@@ -99,7 +105,8 @@ void ArquivoBinario::desfazerLeitura(){
 
 bool ArquivoBinario::fimLeitura(){
 	
-    unsigned int registrosLidos = std::ceil((indexLeitura - tamanhoCabecalho) / float(sizeof(DadosEmprego)));
+    // unsigned int registrosLidos = std::ceil((indexLeitura - tamanhoCabecalho) / float(sizeof(DadosEmprego)));
+    unsigned int registrosLidos = (indexLeitura - tamanhoCabecalho) / sizeof(DadosEmprego);
 	return registrosLidos >= numRegistros;
 	
 }

@@ -17,6 +17,7 @@ OrdenacaoExterna::OrdenacaoExterna(const std::string &nomeArq, float gB){
 
 
     tamanhoHeap = arquivoPrincipal->getNumRegistros() <= tamanhoMaxHeap ? arquivoPrincipal->getNumRegistros() : tamanhoMaxHeap;
+    std::cout << "tamanho heap:" << tamanhoHeap << "\n";
 
     DadosEmprego *d = new DadosEmprego[tamanhoHeap];
     arquivoPrincipal->posicionaInicio();
@@ -36,15 +37,15 @@ OrdenacaoExterna::OrdenacaoExterna(const std::string &nomeArq, float gB){
 
     std::cout << "diferenca:  " << diferenca << "\n";
 
-    if(arquivoTemp_01->getNumRegistros() && arquivoTemp_02->getNumRegistros())
-        mergeSort(arquivoTemp_01, arquivoTemp_02, arquivoTemp_03, arquivoTemp_04);
-    else{
-        std::cout << "temp01: " << arquivoTemp_01->getNumRegistros() << "\n";
-        std::cout << "temp02: " << arquivoTemp_02->getNumRegistros() << "\n";
-        std::cout << "temp03: " << arquivoTemp_03->getNumRegistros() << "\n";
-        std::cout << "temp04: " << arquivoTemp_04->getNumRegistros() << "\n";
-        std::cout << "nem intercalou\n";
-    }
+    // if(arquivoTemp_01->getNumRegistros() && arquivoTemp_02->getNumRegistros())
+    //     mergeSort(arquivoTemp_01, arquivoTemp_02, arquivoTemp_03, arquivoTemp_04);
+    // else{
+    //     std::cout << "temp01: " << arquivoTemp_01->getNumRegistros() << "\n";
+    //     std::cout << "temp02: " << arquivoTemp_02->getNumRegistros() << "\n";
+    //     std::cout << "temp03: " << arquivoTemp_03->getNumRegistros() << "\n";
+    //     std::cout << "temp04: " << arquivoTemp_04->getNumRegistros() << "\n";
+    //     std::cout << "nem intercalou\n";
+    // }
 }
 
 OrdenacaoExterna::~OrdenacaoExterna(){
@@ -69,6 +70,8 @@ void OrdenacaoExterna::distribuicaoRegistros(){
         DadosHeap dadoHeap, dadoHeapRaiz;
         DadosEmprego dadoEmprego;
         unsigned int contadorRegistros{0};
+
+        arquivoPrincipal->posicionaIndex();
 
         while(!heapRegistros->vazia()){
 
@@ -96,9 +99,8 @@ void OrdenacaoExterna::distribuicaoRegistros(){
             }
             else
                 dadoHeap = heapRegistros->removeRaiz();
-            
+
             arquivoTempAtual->escreverRegistro(&dadoHeap.valorDado);
-            // arquivoTempAtual->arquivo.write((char *)&dadoHeap.valorDado, sizeof(DadosEmprego));
             contadorRegistros++;
         }
 
