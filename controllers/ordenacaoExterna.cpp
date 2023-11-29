@@ -49,14 +49,33 @@ OrdenacaoExterna::OrdenacaoExterna(const std::string &nomeArq, float gB){
 }
 
 OrdenacaoExterna::~OrdenacaoExterna(){
-    
+
+    arquivoPrincipal->close();
+
+    remove((caminhoPastaArquivos + arquivoPrincipal->getNome()).c_str());
+
+    ArquivoBinario* listaArquivos[4] = {
+        arquivoTemp_01,
+        arquivoTemp_02,
+        arquivoTemp_03,
+        arquivoTemp_04
+    };
+
+    for(int i{0}; i<4; i++){
+
+        listaArquivos[i]->close();
+
+        if(!listaArquivos[i]->getNumRegistros())
+            remove((caminhoPastaArquivos + listaArquivos[i]->getNome()).c_str());
+        else
+            rename((caminhoPastaArquivos + listaArquivos[i]->getNome()).c_str(), (caminhoPastaArquivos + arquivoPrincipal->getNome()).c_str());
+    }
+
     delete arquivoPrincipal;
     delete arquivoTemp_01;
     delete arquivoTemp_02;
     delete arquivoTemp_03;
     delete arquivoTemp_04;
-
-    // deletar temporarios
 
 }
 

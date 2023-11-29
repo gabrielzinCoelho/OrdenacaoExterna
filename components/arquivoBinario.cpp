@@ -4,7 +4,7 @@
 #include "./arquivoBinario.hpp"
 #include "../controllers/ordenacaoExterna.hpp"
 
-ArquivoBinario::ArquivoBinario(std::string nomeArq) : tamanhoCabecalho(sizeof(unsigned int)) {
+ArquivoBinario::ArquivoBinario(std::string nomeArq) : nomeArq(nomeArq), tamanhoCabecalho(sizeof(unsigned int)) {
     
     try{
 
@@ -26,7 +26,7 @@ ArquivoBinario::ArquivoBinario(std::string nomeArq) : tamanhoCabecalho(sizeof(un
 
 }
 
-ArquivoBinario::ArquivoBinario(std::string nomeArq, std::ios_base::openmode modoAbertura) : tamanhoCabecalho(sizeof(unsigned int)) {
+ArquivoBinario::ArquivoBinario(std::string nomeArq, std::ios_base::openmode modoAbertura) : nomeArq(nomeArq), tamanhoCabecalho(sizeof(unsigned int)) {
     
     try{
 
@@ -109,4 +109,12 @@ bool ArquivoBinario::fimLeitura(){
     unsigned int registrosLidos = (indexLeitura - tamanhoCabecalho) / sizeof(DadosEmprego);
 	return registrosLidos >= numRegistros;
 	
+}
+
+std::string ArquivoBinario::getNome(){
+    return nomeArq;
+}
+
+void ArquivoBinario::close(){
+    arquivo.close();
 }

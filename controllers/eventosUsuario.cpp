@@ -276,7 +276,7 @@ void EventosUsuario::ordenarArquivo(){
     OrdenacaoExterna *instanciaOrdenacao = new OrdenacaoExterna(nomeDat, 0.05); //50MB
     delete instanciaOrdenacao;
 
-    std::cout << "\nOrdenacao realizada com sucesso.\n";
+    std::cout << "\nOrdenacao realizada com sucesso.\n" << nomeDat << " pronto para uso!\n";
 
     confirmacaoUsuario();
 

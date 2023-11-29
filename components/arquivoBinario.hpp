@@ -6,6 +6,7 @@
 class ArquivoBinario{
     friend class OrdenacaoExterna;
     private:
+        const std::string nomeArq;
         std::fstream arquivo;
         unsigned long long int indexLeitura;
         unsigned int numRegistros;
@@ -25,4 +26,6 @@ class ArquivoBinario{
         void escreverRegistro(DadosEmprego *d);
         void desfazerLeitura();
         bool fimLeitura();
+        std::string getNome();
+        void close();
 };

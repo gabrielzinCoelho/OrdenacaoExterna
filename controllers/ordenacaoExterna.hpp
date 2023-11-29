@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <fstream>
+#include <cstdio>
 #include "../components/minHeap.hpp"
 #include "../components/arquivoBinario.hpp"
 #include "../globals.cpp"
