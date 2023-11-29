@@ -16,7 +16,9 @@ class DadosEmprego{
         void impressaoResumida();
         void impressaoDetalhada();
         bool operator<(const DadosEmprego &d);
+        bool operator<=(const DadosEmprego &d);
         bool operator>(const DadosEmprego &d);
+        bool operator>=(const DadosEmprego &d);
         bool operator==(const DadosEmprego &d);
         void apagar();
         bool ehNulo();

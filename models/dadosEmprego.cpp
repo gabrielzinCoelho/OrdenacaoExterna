@@ -62,6 +62,23 @@ bool DadosEmprego::operator<(const DadosEmprego &d){
     if(comparacaoSeriesId > 0)
         return false;
     
+    if(std::strcmp(this->periodo, d.periodo) < 0)
+        return true;
+    
+    return false;
+    
+}
+
+bool DadosEmprego::operator<=(const DadosEmprego &d){
+
+    int comparacaoSeriesId = std::strcmp(this->seriesId, d.seriesId);
+
+    if(comparacaoSeriesId < 0)
+        return true;
+    
+    if(comparacaoSeriesId > 0)
+        return false;
+    
     if(std::strcmp(this->periodo, d.periodo) <= 0)
         return true;
     
@@ -70,6 +87,23 @@ bool DadosEmprego::operator<(const DadosEmprego &d){
 }
 
 bool DadosEmprego::operator>(const DadosEmprego &d){
+
+    int comparacaoSeriesId = std::strcmp(this->seriesId, d.seriesId);
+
+    if(comparacaoSeriesId > 0)
+        return true;
+    
+    if(comparacaoSeriesId < 0)
+        return false;
+    
+    if(std::strcmp(this->periodo, d.periodo) > 0)
+        return true;
+    
+    return false;
+
+}
+
+bool DadosEmprego::operator>=(const DadosEmprego &d){
 
     int comparacaoSeriesId = std::strcmp(this->seriesId, d.seriesId);
 
