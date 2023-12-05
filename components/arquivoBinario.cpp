@@ -54,7 +54,6 @@ void ArquivoBinario::leituraCabecalho(){
     arquivo.seekp(0);
     arquivo.read((char *)&numRegistros, sizeof(unsigned int));
 
-    //redefinirPonteiroArquivo();
 }
 
 void ArquivoBinario::atualizarCabecalho(){
@@ -105,7 +104,6 @@ void ArquivoBinario::desfazerLeitura(){
 
 bool ArquivoBinario::fimLeitura(){
 	
-    // unsigned int registrosLidos = std::ceil((indexLeitura - tamanhoCabecalho) / float(sizeof(DadosEmprego)));
     unsigned int registrosLidos = (indexLeitura - tamanhoCabecalho) / sizeof(DadosEmprego);
 	return registrosLidos >= numRegistros;
 	

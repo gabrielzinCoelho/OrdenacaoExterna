@@ -10,14 +10,18 @@ OrdenacaoExterna::OrdenacaoExterna(const std::string &nomeArq, float gB){
     unsigned int tamanhoMaxHeap = gB * gBParaByte/sizeof(DadosHeap), tamanhoHeap;
 
     arquivoPrincipal = new ArquivoBinario(nomeArq, std::ios::in);
+
+    // arquivos temporários para ordenação externa
+
     arquivoTemp_01 = new ArquivoBinario("temp01.dat");
     arquivoTemp_02 = new ArquivoBinario("temp02.dat");
     arquivoTemp_03 = new ArquivoBinario("temp03.dat");
     arquivoTemp_04 = new ArquivoBinario("temp04.dat");
 
-
+    // calcula o tamanho da heap: se há registros suficientes, o tamanho será igual ao definido pelo parâmetro gB recebido no construtor da classe
     tamanhoHeap = arquivoPrincipal->getNumRegistros() <= tamanhoMaxHeap ? arquivoPrincipal->getNumRegistros() : tamanhoMaxHeap;
-    std::cout << "tamanho heap:" << tamanhoHeap << "\n";
+
+    // lê os primeiros registros do arquivo, o suficiente para povoar o min heap de acordo com o tamanho definido
 
     DadosEmprego *d = new DadosEmprego[tamanhoHeap];
     arquivoPrincipal->posicionaInicio();
@@ -25,33 +29,19 @@ OrdenacaoExterna::OrdenacaoExterna(const std::string &nomeArq, float gB){
     heapRegistros = new MinHeap(d, tamanhoHeap);
     delete[] d;
 
+    // dividir o arquivo em blocos ordenados utilizando uma espécie de heap sort
     distribuicaoRegistros();
 
-    std::cout << "main:" << arquivoPrincipal->getNumRegistros() << "\n";
-    std::cout << "temp01: " << arquivoTemp_01->getNumRegistros() << "\n";
-    std::cout << "temp02: " << arquivoTemp_02->getNumRegistros() << "\n";
-    std::cout << "temp03: " << arquivoTemp_03->getNumRegistros() << "\n";
-    std::cout << "temp04: " << arquivoTemp_04->getNumRegistros() << "\n";
-
-    long long int diferenca = arquivoPrincipal->getNumRegistros() - arquivoTemp_01->getNumRegistros() - arquivoTemp_02->getNumRegistros();
-
-    std::cout << "diferenca:  " << diferenca << "\n";
-
+    //se um dos arquivos já se encontra sem registros, a fase de intercalação dos blocos não é necessária
     if(arquivoTemp_01->getNumRegistros() && arquivoTemp_02->getNumRegistros())
         mergeSort(arquivoTemp_01, arquivoTemp_02, arquivoTemp_03, arquivoTemp_04);
-    else{
-        std::cout << "temp01: " << arquivoTemp_01->getNumRegistros() << "\n";
-        std::cout << "temp02: " << arquivoTemp_02->getNumRegistros() << "\n";
-        std::cout << "temp03: " << arquivoTemp_03->getNumRegistros() << "\n";
-        std::cout << "temp04: " << arquivoTemp_04->getNumRegistros() << "\n";
-        std::cout << "nem intercalou\n";
-    }
+   
 }
 
 OrdenacaoExterna::~OrdenacaoExterna(){
 
+    // remove o arquivo de entrada (que foi ordenado) e o substitui pelo arquivo resultante da ordenação
     arquivoPrincipal->close();
-
     remove((caminhoPastaArquivos + arquivoPrincipal->getNome()).c_str());
 
     ArquivoBinario* listaArquivos[4] = {
@@ -61,6 +51,8 @@ OrdenacaoExterna::~OrdenacaoExterna(){
         arquivoTemp_04
     };
 
+    // remove os arquivos temporários, à exceção do arquivo que contem numero de registros diferente de 0 (produto da ordenação)
+    // arquivo ordenado é renomeado para substituir o arquivo de entrada
     for(int i{0}; i<4; i++){
 
         listaArquivos[i]->close();
@@ -90,25 +82,35 @@ void OrdenacaoExterna::distribuicaoRegistros(){
         DadosEmprego dadoEmprego;
         unsigned int contadorRegistros{0};
 
+        // garante a posição correta do ponteiro de leitura no arquivo
         arquivoPrincipal->posicionaIndex();
 
+        // enquanto a heap possui registros o heapSort continua em execução
         while(!heapRegistros->vazia()){
 
+
+            // espia a raiz para determinar o valor do campo pesoSegmento do registro que sera inserido
+            // e se o bloco atual deve ser encerrado
             dadoHeapRaiz = heapRegistros->espiaRaiz();
 
+            // caso o atributo pesoSegmento seja inferior ao pesoSegmento da raiz, o bloco atual deve ser encerrado
+            // (significa que os valores cuja inserção foram anteriormente adiadas chegaram ao topo da arvore)
+
             if(dadoHeapRaiz.pesoValor > pesoSegmento){
-                pesoSegmento = dadoHeapRaiz.pesoValor;
+                pesoSegmento = dadoHeapRaiz.pesoValor; // pesoSegmento é atualizado
                 arquivoTempAtual->setNumRegistros(arquivoTempAtual->getNumRegistros() + contadorRegistros);
-                std::swap(arquivoTempAtual, arquivoTempSeguinte);
+                std::swap(arquivoTempAtual, arquivoTempSeguinte); // novo bloco é criado no outro arquivo
                 contadorRegistros = 0;
             }
 
-            // if(arquivoPrincipal->arquivo.read((char *)&dadoEmprego, sizeof(DadosEmprego))){
+
             if(!arquivoPrincipal->fimLeitura()){
                 // ainda tem registros no arquivo principal (remove raiz inserindo novo valor lido)
 
                 arquivoPrincipal->lerRegistro(&dadoEmprego);
 
+                // calcula pesoSegmento do novo dado inserido
+                // (se o novo valor for quebrar a ordem crescente, seu peso é acrescido)
                 if(dadoEmprego < dadoHeapRaiz.valorDado)
                     dadoHeap = heapRegistros->removeInserindo(DadosHeap(&dadoEmprego, pesoSegmento + 1));
 
@@ -119,10 +121,12 @@ void OrdenacaoExterna::distribuicaoRegistros(){
             else
                 dadoHeap = heapRegistros->removeRaiz();
 
+            // escreve o registro no arquivo atual
             arquivoTempAtual->escreverRegistro(&dadoHeap.valorDado);
             contadorRegistros++;
         }
 
+        // atualiza o numero de registros do arquivo atual
         arquivoTempAtual->setNumRegistros(arquivoTempAtual->getNumRegistros() + contadorRegistros);
 
     }catch(std::runtime_error &e){
@@ -148,16 +152,28 @@ void OrdenacaoExterna::intercalacaoRegistros(ArquivoBinario *fonteEntrada_01, Ar
     else
         fimBloco_02 = true;
 
-	
+    
+    // enquanto nenhum dos blocos chegou ao fim, o menor dos registros entre os dois blocos é lido
+
 	while(!fimBloco_01 && !fimBloco_02){
 		
+        // bloco 1 possui o menor registro
+
 		if(*d1 <= *d2){
+
+            // leitura do registro do bloco 1
+
 			fonteSaida->escreverRegistro(d1);
             contadorRegistros++;
+
+            // os blocos de cada arquivo possuem uma divisão lógica (segmentos de tamanho variável)
 
             if(!fonteEntrada_01->fimLeitura()){
                 *d1_anterior = *d1;
                 fonteEntrada_01->lerRegistro(d1);
+
+                // compara o novo registro lido com o anterior, se for menor o bloco chega ao fim
+                // e a leitura adicional é desfeita (ponteiro arquivo volta 1 casa)
 
                 if(*d1 < *d1_anterior){
                     //novo bloco em arquivo 01
@@ -171,6 +187,8 @@ void OrdenacaoExterna::intercalacaoRegistros(ArquivoBinario *fonteEntrada_01, Ar
 		}
         else{
 			
+            // bloco 2 possui o menor registro
+
 			fonteSaida->escreverRegistro(d2);
             contadorRegistros++;
 
@@ -230,6 +248,7 @@ void OrdenacaoExterna::intercalacaoRegistros(ArquivoBinario *fonteEntrada_01, Ar
             fimBloco_02 = true;
     }
 
+    // atualiza o numero de registros
     fonteSaida->setNumRegistros(fonteSaida->getNumRegistros() + contadorRegistros);
 
 	delete d1;
@@ -247,22 +266,22 @@ void OrdenacaoExterna::mergeSort(ArquivoBinario *fonteEntrada_01, ArquivoBinario
     fonteSaida_01->posicionaInicio();
     fonteSaida_02->posicionaInicio();
 
+    // enquanto algum dos arquivos ainda possui blocos a serem intercalados
     while(!fonteEntrada_01->fimLeitura() || !fonteEntrada_02->fimLeitura()){
 
+        // a cada intercalação o arquivo que recebera o novo bloco é atualizado
         intercalacaoRegistros(fonteEntrada_01, fonteEntrada_02, fonteSaida_01);
-        std::swap(fonteSaida_01, fonteSaida_02);
+        std::swap(fonteSaida_01, fonteSaida_02); 
     }
 
+    // atualiza o numero de registros dos arquivos de entrada
     fonteEntrada_01->setNumRegistros(0);
     fonteEntrada_02->setNumRegistros(0);
 
-   if(fonteSaida_01->getNumRegistros() && fonteSaida_02->getNumRegistros())
+    // até que apenas um dos arquivos concentre todos os registros (ordenados) o metodo é chamado recursivamente
+    // arquivos de entrada se tornam arquivos de saida e vice versa
+    if(fonteSaida_01->getNumRegistros() && fonteSaida_02->getNumRegistros())
         mergeSort(fonteSaida_01, fonteSaida_02, fonteEntrada_01, fonteEntrada_02);
-    else{
-        std::cout << "temp01: " << arquivoTemp_01->getNumRegistros() << "\n";
-        std::cout << "temp02: " << arquivoTemp_02->getNumRegistros() << "\n";
-        std::cout << "temp03: " << arquivoTemp_03->getNumRegistros() << "\n";
-        std::cout << "temp04: " << arquivoTemp_04->getNumRegistros() << "\n";
-    }
+    
     
 }
