@@ -18,14 +18,15 @@ void MenuNavegacao::mostraTitulo(){
         std::cout << tituloMenu.substr(0, larguraMenu);
     }else{
 
-        int numEspacamentoAntes = std::ceil(float(larguraMenu)/2);
+        int numEspacamentoAntes = std::ceil(float(larguraMenu - tituloMenu.size())/2);
+        int numEspacamentoDepois = std::floor(float(larguraMenu - tituloMenu.size())/2);
 
         for(int i{0}; i<numEspacamentoAntes - 1; i++)
             std::cout << caractereEspacamento;
         
         std::cout << " " << tituloMenu << " ";
 
-        for(int i{0}; i<(larguraMenu - numEspacamentoAntes) - 1; i++)
+        for(int i{0}; i<numEspacamentoDepois; i++)
             std::cout << caractereEspacamento;
     }
 

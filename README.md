@@ -8,6 +8,65 @@ A finalidade deste trabalho é implementar um sistema que converta um arquivo CS
 
 A base de informações utilizada se refere a dados estatísticos relacionados à força de trabalho, coletados em pesquisas como a "Household Labour Force Survey - HLF", "Labour Cost Index - LCI", "Quarterly Employment Survey - QEM", entre outras. A tabela contém uma série de observações e estatísticas relacionadas à força de trabalho e dados de emprego.
 
+
+## Saídas no terminal
+
+``` 
+
+***************** MENU PRINCIPAL ******************
+
+Escolha uma opcao:
+
+[1] Importar/Exportar arquivos
+[2] Manipular registros
+[3] Ordenacao Externa dos Registros
+[4] Finalizar programa
+
+===>
+```
+
+``` 
+
+******************** ARQUIVOS *********************
+
+Escolha uma opcao:
+
+[1] Conversão CSV -> Binario
+[2] Conversão Binario -> CSV
+[3] Menu anterior (principal)
+
+===>
+``` 
+``` 
+
+******************** REGISTROS ********************
+
+Escolha uma opcao:
+
+[1] Visualizar registros
+[2] Inserir registro
+[3] Deletar registro
+[4] Editar registro
+[5] Inverter posicao entre registros
+[6] Menu anterior (principal)
+
+===>
+``` 
+
+```
+
+************** VISUALIZAR REGISTROS ***************
+
+Escolha uma opcao:
+
+[1] Visualizar registros entre posições X e Y
+[2] Visualizar todos os registros
+[3] Visualizar com detalhes
+[4] Menu anterior (registros)
+
+===>
+``` 
+
 ## Detalhes do projeto
 
 * Basta compilar o arquivo main.cpp
@@ -15,7 +74,7 @@ A base de informações utilizada se refere a dados estatísticos relacionados �
 * O programa consegue gerenciar vários registros csv e binário em uma mesma execução
 * Qualquer tipo de importação/exportação de arquivos concatena os dados no arquivo de destino, nunca os sobreescreve
 
-### Detalhes da implementação
+## Detalhes da implementação
 
 Durante a fase de distribuição dos registros, a estrutura de dados **minheap** se encaixou muito bem como uma maneira de otimizar o processo de ordenação externa em um processo muito similar ao **heap sort**. Para isso, foi atribuído aos dados do heap um valor do tipo inteiro denominado **pesoSegmento**. Dessa maneira, caso um valor que viesse a ser inserido na estrutura fosse menor que a raiz atual, tal valor é acrescido de um peso maior, visando que o mesmo **afunde no heap**, evitando que a ordenação do bloco atual seja interrompida por tal valor e um novo bloco venha a ser criado. Sendo assim, valores com pesos superiores têm sua inserção adiada nos arquivos temporários, resultado em **blocos os maiores possíveis** e, consequentemente, **redução de etapas na fase de intercalação dos registros**.
 
