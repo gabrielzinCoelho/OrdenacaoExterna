@@ -4,14 +4,21 @@ Projeto desenvolvido para a disciplina de Estrutura de Dados, ofertada pela UFLA
 
 ## Sobre o projeto
 
-A finalidade deste trabalho é implementar um sistema que converta um arquivo CSV em binário e,  posteriormente, trabalhe com ordenação em memória secundária.
+A finalidade deste trabalho é implementar um sistema que converta um arquivo CSV em binário e, posteriormente, trabalhe com ordenação em memória secundária.
 
 A base de informações utilizada se refere a dados estatísticos relacionados à força de trabalho, coletados em pesquisas como a "Household Labour Force Survey - HLF", "Labour Cost Index - LCI", "Quarterly Employment Survey - QEM", entre outras. A tabela contém uma série de observações e estatísticas relacionadas à força de trabalho e dados de emprego.
 
+<p align="center">
+  <img src="docs/external-merge-sort.jpg" alt="Visão geral - Merge Sort Externo" width="600"/>
+</p>
+
+<p align="center">
+  <em>Merge Sort Externo</em>
+</p>
 
 ## Saídas no terminal
 
-``` 
+```
 
 ***************** MENU PRINCIPAL ******************
 
@@ -25,7 +32,7 @@ Escolha uma opcao:
 ===>
 ```
 
-``` 
+```
 
 ******************** ARQUIVOS *********************
 
@@ -36,8 +43,9 @@ Escolha uma opcao:
 [3] Menu anterior (principal)
 
 ===>
-``` 
-``` 
+```
+
+```
 
 ******************** REGISTROS ********************
 
@@ -51,7 +59,7 @@ Escolha uma opcao:
 [6] Menu anterior (principal)
 
 ===>
-``` 
+```
 
 ```
 
@@ -65,14 +73,14 @@ Escolha uma opcao:
 [4] Menu anterior (registros)
 
 ===>
-``` 
+```
 
 ## Detalhes do projeto
 
-* Basta compilar o arquivo main.cpp
-* Todos os arquivos manipulados pelo programa devem ficar na pasta ``` "./baseDados/" ```
-* O programa consegue gerenciar vários registros csv e binário em uma mesma execução
-* Qualquer tipo de importação/exportação de arquivos concatena os dados no arquivo de destino, nunca os sobreescreve
+- Basta compilar o arquivo main.cpp
+- Todos os arquivos manipulados pelo programa devem ficar na pasta `"./baseDados/"`
+- O programa consegue gerenciar vários registros csv e binário em uma mesma execução
+- Qualquer tipo de importação/exportação de arquivos concatena os dados no arquivo de destino, nunca os sobreescreve
 
 ## Detalhes da implementação
 
